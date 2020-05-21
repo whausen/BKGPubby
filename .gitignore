@@ -1,3 +1,6 @@
-webapp/WEB-INF/classes
-pubby-*.zip
-/target/
+target
+.classpath
+.project
+.settings
+*.swp
+/build/

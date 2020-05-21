@@ -1,0 +1,101 @@
+#parse("header.vm")
+<div class="row-fluid">
+#if ($image)
+    <div class="image">
+    <img src="$image" style="max-width:500px;max-height:500px" alt="Depiction of $resource.label" title="Depiction of $title" />
+    </div>
+#end
+
+#if (!$geoms.isEmpty())
+<a name="geo"></a>
+<div id="map" style="height:500px">
+</div>
+<script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
+<script src="https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/Leaflet.fullscreen.min.js"></script>
+<script type="text/javascript">
+var overlayMaps={}
+var map = L.map('map',{fullscreenControl: true,fullscreenControlOptions: {position: 'topleft'}}).setView([51.505, -0.09], 13);
+	var layer=L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+	});
+	var wmsLayer = L.tileLayer.wms('https://sgx.geodatenzentrum.de/wms_topplus_web_open', {
+		layers: 'web',
+		format: 'image/png',
+ 			transparent: true,
+			attribution: '&copy; Bundesamt f&uuml;r Kartographie und Geod&auml;sie 2017, <a href="http://sg.geodatenzentrum.de/web_public/Datenquellen_TopPlus_Open.pdf">Datenquellen</a>'
+		});
+	var baseMaps = {
+    "BKG": wmsLayer,
+        "OSM": layer
+	};
+	baseMaps["BKG"].addTo(map);
+	L.control.scale({
+	position: 'bottomright',
+	imperial: false
+	}).addTo(map);
+	layercontrol=L.control.layers(baseMaps,overlayMaps).addTo(map);
+	var bounds = L.latLngBounds([]);
+        #foreach($i in $geoms)
+              var wkt_geom = "${i}";
+			  var wicket = new Wkt.Wkt();
+              wicket.read(wkt_geom);
+              props={}
+              #set($x = 0)
+              #foreach ($property in $properties)
+                  #if($x < 10)
+                     props["${property.BrowsableURL}"]="${property.label}"
+                  #end
+                  #set($x = $x+1)
+              #end
+			  var feature = { "type": "Feature", 'properties': props, "geometry": wicket.toJson() };
+              layerr=L.geoJson(feature,{
+              onEachFeature: function (feature, layer) {
+              		var popup="<b><a href=\"$uri\" target=\"_blank\">$title</a></b><br/><ul>"
+                    for(prop in feature.properties){
+                        if((typeof prop !== 'undefined') && prop.includes("http")){
+                        	popup+="<li><a href=\""+prop+"\" target=\"_blank\">"+prop.substring(prop.lastIndexOf('/')+1)+"</a> - "
+                        }else{
+                        	popup+="<li>"+prop+" - "
+                        }
+                        if((typeof feature.properties.prop !== 'undefined') && feature.properties.prop.includes("http")){
+                        	popup+="<a href=\""+feature.properties.prop+"\" target=\"_blank\">"+prop.substring(feature.properties.prop.lastIndexOf('/')+1)+"</a></li>"
+                        }else{
+                        	popup+=feature.properties.prop+"</li>"
+                        }
+                    }
+                    popup+="</ul>"
+                    layer.bindPopup(popup)
+              }
+              })
+              layerr.addTo(map)
+              var layerBounds = layerr.getBounds();
+              bounds.extend(layerBounds);
+        #end
+        map.fitBounds(bounds);
+</script>
+#end
+</div>
+#if ($comment)
+    <p class="comment">$comment</p>
+#end
+
+#if (!$properties.isEmpty())
+#parse("proptable.vm")
+#else
+    <p>No further information is available.</p>
+#end
+
+#if ($metadata)
+<div class="row-fluid">
+	<a name="meta"></a>
+	<h2>Metadata</h2>
+	<div id="metadata-tables">
+	#parse("metadatatable.vm")
+	</div>
+	<a href="#meta" onclick="showAllMetadata('metadata-tables')">expand all</a>
+</div>
+#end
+
+
+
+#parse("footer.vm")

@@ -19,13 +19,14 @@ h5 { font: italic 100% sans-serif; }
 h6 { font: small-caps 100% sans-serif; }
 .hide { display: none; }
 pre { background: #fff6bb; font-family: monospace; line-height: 1.2em; padding: 1em 2em; }
-dt { font-size: 120%; font-weight: bold; margin-top: 0; margin-bottom: 0; }
-dd { margin-top: 0; margin-bottom: 0; }
+dt { font-size: 120%; margin-top: 0; margin-bottom: 0; }
+dd { margin: 0 0 1.6em; }
 dd p { margin-top: 0; }
 code, tt { font-family: monospace; }
 ul.toc { list-style-type: none; }
 ol.toc li a { text-decoration: none; }
 .note { color: red; }
+.acknowledgements a { color: #444; text-decoration: none; }
 #header { border-bottom: 1px solid #ccc; }
 #logo { float: right; }
 #authors { clear: right; float: right; font-size: 80%; text-align: right; }
@@ -52,18 +53,9 @@ pre { speak-punctuation: code; }
 </head>
 <body>
 
-<div id="logo">
-  <a href="http://www.fu-berlin.de/"><img src="images/fu-logo.gif" alt="Freie Universit&auml;t Berlin Logo" /></a>
-</div>
-
 <div id="header">
   <h1 style="font-size: 250%">Pubby</h1>
   <div id="tagline">A Linked Data Frontend for SPARQL Endpoints</div>
-</div>
-
-<div id="authors">
-  <a href="http://richard.cyganiak.de/">Richard Cyganiak</a><br />
-  <a href="http://www.bizer.de/">Chris Bizer</a>
 </div>
 
 <div id="content">
@@ -92,7 +84,7 @@ pre { speak-punctuation: code; }
 <ul>
   <li><strong>2011-01-26: Pubby 0.3.3 released.</strong> This version switches Pubby from using N3 syntax to the (almost identical) Turtle syntax. Configuration files now use the <code>.ttl</code> extension instead of <code>.n3</code>. The source code was also moved to <a href="http://github.com/cygri/pubby">a Github repository</a>.</li>
   <li><strong>2011-01-25: Pubby 0.3.2 released.</strong> This version fixes a bug in the metadata extension. This bug caused problems generating RDF/XML output.</li>
-  <li><strong>2011-01-20: Alternaitve tool released. </strong>Epimorphics has released <a href="http://elda.googlecode.com/hg/deliver-elda/src/main/docs/index.html">Elda</a>, a Linked Data publishing tool which can be used as an alternative to Pubby. </li>
+  <li><strong>2011-01-20: Alternative tool released. </strong>Epimorphics has released <a href="https://github.com/epimorphics/elda">Elda</a>, a Linked Data publishing tool which can be used as an alternative to Pubby. </li>
   <li><strong>2010-07-27: Pubby 0.3.1 released.</strong> The default metadata template in this version is updated to release v0.5 of the <a href="http://purl.org/net/provenance/">Provenance Vocabulary</a>.</li>
   <li><strong>2009-09-26: Pubby 0.3 released.</strong> This version adds a <a href="http://sourceforge.net/apps/mediawiki/trdf/index.php?title=Pubby_Metadata_Extension">metadata extension</a> that -by default- provides provenance information.</li>
   <li><strong>2007-10-22: Pubby 0.2 released.</strong> This version adds multi-dataset support, has improved content negotiation,
@@ -100,7 +92,7 @@ pre { speak-punctuation: code; }
   <li><strong>2007-06-20: Pubby 0.1 released.</strong> Today marks the release of the first alpha version of Pubby.</li>
 </ul>
 
-<h2>Features</h2>
+<h2 id="features">Features</h2>
 <div style="float:right; margin:1em 0 1em 1em"><a href="images/dbpedia-berlin.jpg"><img src="images/dbpedia-berlin-thumb.jpg" alt="Screenshot of a Pubby web page displaying information from the DBpedia SPARQL endpoint" /></a></div>
 
 <ul>
@@ -112,7 +104,7 @@ pre { speak-punctuation: code; }
   <li>Includes a <a href="http://sourceforge.net/apps/mediawiki/trdf/index.php?title=Pubby_Metadata_Extension">metadata extension</a> to add metadata to the provided data</li>
 </ul>
 
-<h2>How It Works</h2>
+<h2 id="how">How It Works</h2>
 
 <p>Many triple stores and other SPARQL endpoints can be accessed only by SPARQL client applications
   that use the SPARQL protocol. It cannot be accessed by the growing variety of Linked Data clients.
@@ -123,20 +115,23 @@ pre { speak-punctuation: code; }
 <p><strong>In RDF, resources are identified by URIs.</strong> The URIs used in most SPARQL dataset are
   <strong>not dereferenceable</strong>, meaning they cannot be accessed in a Semantic Web browser,
   but return <tt>404 Not Found</tt> errors instead, or use non-dereferenceable URI schemes, as in
-  the fictional URI <tt>tag:dbpedia.org,2007:Berlin</tt>.</p>
+  the fictional URI <tt>tag:data.example.org,2007:Berlin</tt>.</p>
 
-<p>When setting up a Pubby server for a SPARQL endpoint, you will <strong>configure a mapping</strong>
-  that translates those URIs to dereferenceable URIs handled by Pubby. If your
-  server is running at <tt>http://myserver.org:8080/pubby/</tt>, then the Berlin URI above might be 
-  mapped to <tt>http://myserver.org:8080/pubby/Berlin</tt>.</p>
-
-<p>Pubby will <strong>handle requests to the mapped URIs</strong> by connecting to the SPARQL endpoint,
-  asking it for information about the original URI, and passing back the results to the client.
+<p>Pubby <strong>handles HTTP requests to URIs</strong> by connecting to the SPARQL endpoint,
+  asking it for information about the URI, and passing back the results to the client rendered
+  in an appropriate format.
   It also handles various <strong>details of the HTTP interaction</strong>, such as the
   303 redirect required by Web Architecture, and content negotiation between HTML, RDF/XML and Turtle 
   descriptions of the same resource.</p>
 
-<h2>Download and Installation</h2>
+<p>Optionally, you may <strong>configure a mapping</strong> that translates URIs in the endpoint
+  to dereferenceable URIs handled by Pubby. This is required if the URIs in the endpoint use a
+  non-dereferenceable URI scheme or if you cannot run Pubby in the main namespace of the dataset.
+  For example, if Pubby is running at <tt>http://myserver.org:8080/pubby/</tt>, then you may need
+  to configure a mapping to translate URIs of the form <tt>tag:data.example.org,2007,<em>XXX</em></tt>
+  to URIs of the form <tt>http://myserver.org:8080/pubby/<em>XXX</em></tt>.</p>
+
+<h2 id="setup">Download and Installation</h2>
 
 <ol>
 <li><strong><a href="download">Download Pubby</a></strong>
@@ -146,18 +141,20 @@ pre { speak-punctuation: code; }
   has been tested with <a href="http://tomcat.apache.org/">Tomcat</a> and <a href="http://www.mortbay.org/">Jetty</a>.
   I will assume your server is set up to run at <tt>http://myserver/</tt>.</li>
 
-<li>Unzip the Pubby distribution and <strong>copy the <tt>webapp</tt> directory</strong>
+<li>Unzip the Pubby distribution and <strong>move the <tt>pubby</tt> directory</strong>
   into the servlet container's <tt>webapps</tt> folder. If Pubby is the only
   web application you want to run in the container, then rename the <tt>webapp</tt>
-  directory to <tt>root</tt>. Otherwise, rename it to something like <tt>mydataset</tt>.
-  This will change the Pubby root to <tt>http://myserver/mydataset/</tt>.</li>
+  directory to <tt>ROOT</tt>. This will make Pubby run at
+  <tt>http://myserver/</tt>. Otherwise, you may rename it to something like
+  <tt>mydataset</tt>.
+  This will make Pubby run at <tt>http://myserver/mydataset/</tt>.</li>
 
 <li><strong>Modify the configuration file</strong> to suit your needs. It is located
-  within Pubby's webapp directory, at <tt>/WEB-INF/config.ttl</tt>. See the next section
+  within the <tt>pubby</tt> directory, at <tt>/WEB-INF/config.ttl</tt>. See the next section
   for a list of supported configuration directives.</li>
 </ol>
 
-<h2>Configuration</h2>
+<h2 id="config">Configuration</h2>
 
 <p>The Pubby configuration file uses <strong><a href="http://www.w3.org/TeamSubmission/turtle/">Turtle</a></strong>
   syntax. It typically starts with some boilerplate <strong>prefix declarations</strong>, followed
@@ -180,7 +177,7 @@ pre { speak-punctuation: code; }
   e.g. URIs are always enclosed in angle brackets, while literal
   values are enclosed in quotes. All directives are optional unless otherwise noted.</p>
 
-<h3>Server Configuration Section</h3>
+<h3 id="conf:Configuration">Server Configuration Section</h3>
 
 <p>Below is a list of all supported directives for the server configuration section.</p>
 
@@ -193,7 +190,8 @@ pre { speak-punctuation: code; }
 
 <dt><tt>conf:webBase &lt;<em>server_base_uri</em>&gt;;</tt></dt>
 <dd><p><strong>Required.</strong> The root URL where the Pubby web application is installed, e.g.
-  <tt>http://myserver/mydataset/</tt>.</p></dd>
+  <tt>http://myserver/mydataset/</tt>. By default, Pubby will only handle URIs from the datasets
+  that start with this prefix; see the <tt>conf:datasetBase</tt> directive below for how to change this.</p></dd>
 
 <dt><tt>conf:labelProperty <em>ex:property1</em>, <em>ex:property2</em>, ...;</tt></dt>
 <dd><p>The value of these RDF properties, if present in the dataset, will be used
@@ -218,7 +216,49 @@ pre { speak-punctuation: code; }
 
 <dt><tt>conf:indexResource &lt;<em>dataset_uri</em>&gt;;</tt></dt>
 <dd><p>The URI of a resource whose description will be displayed as the home page of the Pubby installation.
-  Note that you have to specify a <em>dataset URI</em>, not a mapped web URI.</p></dd>
+  If not specified in the configuration, a list of all available resources is generated.</p></dd>
+
+<dt><tt>conf:browsableNamespace &lt;<em>namespace_uri</em>&gt;</tt></dt>
+<dd><p>Equivalent to declaring a <tt>conf:browsableNamespace</tt> property
+  (see below) in all <tt>conf:dataset</tt> blocks.</p></dd>
+
+<dt><tt>conf:showLabels <em>true</em>/<em>false</em></tt></dt>
+<dd><p>When enabled, Pubby attempts to show <tt>rdfs:labels</tt> instead of
+  URIs or prefixed names. Enabled by default.</p></dd>
+
+<dt><tt>conf:loadVocabulary &lt;<em>vocabularyURL</em>&gt;</tt></dt>
+<dd><p>On startup, Pubby will load vocabularies from the listed URLs, and use
+  any labels and weights found in them (see <tt>conf:showLabels</tt> and
+  <tt>conf:weight</tt>). Pubby will always use any such statements
+  found in the mapping file itself. File
+  URLs can be used. Relative URLs are interpreted as relative to the configuration
+  file.</p></dd>
+  <pre>
+@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt;.
+&lt;&gt; a conf:Configuration;
+    conf:loadVocabulary
+        &lt;http://www.w3.org/2004/02/skos/core#&gt;,
+        rdfs:,
+        &lt;custom.ttl&gt;;
+        .
+ex:Widget rdfs:label "widget"@en.</pre>
+  <p>The example defines a label for <tt>ex:Widget</tt>, and retrieves labels
+  from the RDF Schema and SKOS namespace files off the Web, as well as from
+  one local file located in the same directory as <tt>config.ttl</tt>.</p>
+  <p>Declaring this property is equivalent to setting up a new dataset
+  with these settings:</p>
+  <pre>conf:dataset [
+    a conf:AnnotationProvider;
+    conf:loadRDF &lt;<em>vocabularyURL</em>&gt;;
+];</pre></dd>
+
+<dt><tt>conf:webResourcePrefix "<em>uri_prefix/</em>";</tt></dt>
+<dd><p>If present, this string will be prefixed to resource URIs
+  on the web server. For example, if set to “<tt>resource/</tt>”,
+  then the resulting web URIs will be of the form
+  <tt>http://myserver/resource/XXX</tt>. The default is the
+  empty string. This is a legacy feature and its use
+  is discouraged.</p></dd>
 
 <dt><tt>conf:dataset [ ... ];</tt></dt>
 <dd><p><strong>Required.</strong> Introduces a dataset configuration section.
@@ -226,41 +266,262 @@ pre { speak-punctuation: code; }
 </dl>
 
 
-<h3>Dataset Configuration Section</h3>
+<h3 id="conf:Dataset">Dataset Configuration Section</h3>
 
 <p>Below is a list of all supported directives for the server configuration section.</p>
 
 <dl>
 <dt><tt>conf:sparqlEndpoint &lt;<em>sparql_endpoint_url</em>&gt;;</tt></dt>
-<dd><p><strong>Required.</strong> The URL of the SPARQL endpoint whose data we want to expose.</p></dd>
+<dd><p><strong>Required</strong>, unless <tt>conf:loadRDF</tt> is used. in which case
+  The URL of the SPARQL endpoint whose data we want to expose.</p></dd>
 
 <dt><tt>conf:sparqlDefaultGraph &lt;<em>sparql_default_graph_name</em>&gt;;</tt></dt>
 <dd><p>If the data of interest is not located in the SPARQL dataset's default graph, but within
   a named graph, then its name must be specified here.</p></dd>
 
+<dt><tt>conf:supportsSPARQL11 <em>true</em>/<em>false</em>;</tt></dt>
+<dd><p>Indicates whether the SPARQL endpoint supports SPARQL 1.1, If <tt>false</tt>,
+  any features that require Pubby to issue SPARQL 1.1 queries will be disabled, and
+  Pubby will only use SPARQL 1.0. Defaults to <tt>false</tt>.</p></dd>
+
+<dt><tt>conf:loadRDF &lt;<em>data1.rdf</em>&gt;, &lt;<em>data2.ttl</em>&gt;, ...;</tt></dt>
+<dd><p>Load one or more RDF documents from the Web or the file system and use them as the
+  data source. The SPARQL endpoint configured above will be ignored, as will be any custom
+  SPARQL queries. Allows using Pubby as an RDF server for publishing static RDF files,
+  or enriching another dataset with additional triples loaded from a static file.</p></dd>
+
 <dt><tt>conf:datasetBase &lt;<em>dataset_uri_prefix</em>&gt;;</tt></dt>
-<dd><p><strong>Required.</strong> The common URI prefix of the resource identifiers in the SPARQL dataset;
-  only resources with this prefix will be mapped and made available by Pubby.</p></dd>
+<dd><p>Only resources starting with this URI prefix will be hosted by Pubby, and
+  will be mapped into the <tt>conf:webBase</tt> namespace. If not specified,
+  only resources starting with the <tt>conf:webBase</tt> value will be hosted.</p>
+  <p><em>Note:</em> In the configuration file and any imported vocabularies,
+  references to resources in the dataset must be made using URIs in the rewritten
+  form, that is, using URIs that start with the <tt>conf:webBase</tt>. Using
+  namespace declarations or vocabulary declarations for URIs that start with
+  the <tt>conf:datasetBase</tt> is likely a mistake.</p></dd>
+
+<dt><tt>conf:browsableNamespace &lt;<em>namespace_iri</em>&gt;</tt></dt>
+<dd><p>Makes all URIs that start with that namespace URI browsable in Pubby.
+  Unlike <tt>conf:datasetBase</tt>, Pubby will not attempt to make these
+  URIs dereferenceable; it merely creates
+  web pages that show descriptions of the resources and allow browsing.</p>
+  <pre>conf:browsableNamespace &lt;http://www.w3.org/&gt;;</pre>
+  <p>The example means that clicking on any resource whose URI starts with
+  <tt>http://www.w3.org/</tt> takes the user to another Pubby page, rather
+  than taking them away from Pubby and to the <tt>w3.org</tt> website.
+  This is useful if you have loaded vocabularies from <tt>w3.org</tt>
+  into your dataset.</p>
+  <p>The value <tt>&lt;http://&gt;</tt> can be used to make Pubby handle
+  <em>all</em> (HTTP) URIs.</p></dd>
+
+<dt><tt>a conf:AnnotationProvider</tt></dt>
+<dd><p>A dataset typed as an annotation provider will be queried for
+  <em>every</em> resource that is displayed, regardless of
+  <tt>conf:datasetBase</tt> and <tt>conf:browsableNamespace</tt>
+  settings. This is only recommended for small datasets loaded
+  into memory to provide labels and other annotations for vocabulary
+  terms, etc.</p>
+  <p>This example loads vocabularies from multiple locations on the
+  Web and makes them browsable:</p>
+  <pre>conf:dataset [
+    a conf:AnnotationProvider;
+    conf:loadRDF &lt;http://dublincore.org/2012/06/14/dcterms.ttl&gt;,
+                 &lt;http://vocab.deri.ie/void.ttl&gt;;
+    conf:browsableNamespace dcterms:, void:;
+];
+</pre></dd>
 
 <dt><tt>conf:datasetURIPattern "<em>regular expression</em>";</tt></dt>
 <dd><p>If present, only dateset URIs matching this
   <a href="http://java.sun.com/j2se/1.5.0/docs/api/java/util/regex/Pattern.html">Java-style regular expression</a>
-  will be mapped and made available by Pubby. The regular expression must match
-  <em>everything after the <tt>datasetBase</tt> part of the URI</em>.</p>
-  <pre>conf:datasetBase &lt;http://example.org/&gt;;
-conf:datasetURIPattern "(users|documents)/.*";</pre>
+  will be made available by Pubby. The regular expression must match
+  <em>somwehere within the URI as it appears in the data source</em>.</p>
+  <pre>conf:datasetURIPattern "/(users|documents)/";</pre>
   <p>This example configuration will publish the dataset URI <tt>http://example.org/users/alice</tt>, but not
   <tt>http://example.org/invoices/5395842</tt> because the URI part <tt>invoices/5395842</tt>
-  does not match the regular expression.</p></dd>
+  does not match the regular expression. It would also publish <tt>http://othersite.com/users/12345</tt> if that URI happens to appear in the data source.</p></dd>
+
+<dt><tt>conf:resourceDescriptionQuery <em>"SPARQL query"</em></tt></dt>
+<dd><p>Allows specification of one or more SPARQL queries that are run against the
+  target endpoint to build the description of a single resource. The resource to be
+  described is given in the placeholder variable <tt>?__this__</tt>. Only query forms
+  that return an RDF graph are allowed (that is, <tt>DESCRIBE</tt> and
+  <tt>CONSTRUCT</tt>). If unspecified and SPARQL 1.1 is not supported
+  (see <tt>conf:supportsSPARQL11</tt>, then the following
+  <tt>DESCRIBE</tt> query is used:</p>
+  <pre>DESCRIBE ?__this__</pre>
+  <p>On SPARQL endpoints that do not (propertly) support the default
+  <tt>DESCRIBE</tt> query shown above, the following <tt>CONSTRUCT</tt> setup can be
+  used instead:</p>
+  <pre>conf:resourceDescriptionQuery
+    "CONSTRUCT { ?__this__ ?p ?o } WHERE { ?__this__ ?p ?o }",
+    "CONSTRUCT { ?s ?p ?__this__ } WHERE { ?s ?p ?__this__ }";</pre></dd>
+  <p>On SPARQL endpoints that support SPARQL 1.1, the following queries are used by
+  default. The placeholders <tt>?__high_outdegree_properties__</tt> and
+  <tt>?__high_indegree_properties__</tt> are replaced with a comma-separated list
+  in parentheses of the high-outdegree properties and high-indegree properties,
+  respectively:</p>
+  <pre>conf:resourceDescriptionQuery """
+        CONSTRUCT {
+            ?__this__ ?p ?o.
+        }
+        WHERE {
+            ?__this__ ?p ?o.
+            FILTER (?p NOT IN ?__high_outdegree_properties__)
+        }
+    """, """
+        CONSTRUCT {
+            ?s ?p ?__this__.
+        }
+        WHERE {
+            ?s ?p ?__this__.
+            FILTER (?p NOT IN ?__high_indegree_properties__)
+        }
+    """;</pre>
+  <p>The following advanced example retrieves labels for all linked resources.
+  As Pubby always automatically uses labels where they are available, this will
+  cause values to be shown with nice labels rather than just as URIs. This comes
+  at a performance cost.<p>
+  <pre>conf:resourceDescriptionQuery """
+        PREFIX rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt;
+        CONSTRUCT {
+            ?__this__ ?p ?o.
+            ?o rdfs:label ?label.
+        }
+        WHERE {
+            ?__this__ ?p ?o.
+            OPTIONAL { ?o rdfs:label ?label }
+            FILTER (?p NOT IN ?__high_outdegree_properties__)
+        }
+    """, """
+        PREFIX rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt;
+        CONSTRUCT {
+            ?s ?p ?__this__.
+            ?s rdfs:label ?label.
+        }
+        WHERE {
+            ?s ?p ?__this__.
+            OPTIONAL { ?s rdfs:label ?label }
+            FILTER (?p NOT IN ?__high_indegree_properties__)
+        }
+    """;</pre></dd>
+
+<dt><tt>conf:propertyListQuery <em>"SPARQL query"</em></tt></dt>
+<dt><tt>conf:inversePropertyListQuery <em>"SPARQL query"</em></tt></dt>
+<dd><p>Allows customization of the SPARQL queries that are used to retrieve lists
+  of values for high-outdegree and high-indegree properties, respectively.
+  See <tt>conf:HighOutdegreeProperty</tt> and <tt>conf:HighIndegreeProperty</tt>
+  below for more information on these concepts. The resource to be described
+  is given in the placeholder variable <tt>?__this__</tt>. The property whose
+  values are to be retrieved is given in <tt>?__property__</tt>. Blank node
+  values must be excluded.
+  If unspecified, the following <tt>CONSTRUCT</tt>
+  queries are used for forward and backward properties, respectively:</p>
+  <pre>conf:propertyListQuery
+    "CONSTRUCT {?__this__ ?__property__ ?that} WHERE {?__this__ ?__property__ ?that. FILTER (!isBlank(?that))}";
+
+conf:inversePropertyListQuery
+    "CONSTRUCT {?that ?__property__ ?__this__} WHERE {?that ?__property__ ?__this__. FILTER (!isBlank(?that))}";</pre></dd>
+
+<dt><tt>conf:anonymousPropertyDescriptionQuery <em>"SPARQL query"</em></tt></dt>
+<dt><tt>conf:anonymousInversePropertyDescriptionQuery <em>"SPARQL query"</em></tt></dt>
+<dd><p>Allows customization of the SPARQL queries that are used to retrieve details
+  about blank nodes that appear as values of a property <tt>?__property__</tt>
+  on a resource <tt>?__this__</tt>. If unspecified, the following <tt>DESCRIBE</tt>
+  queries are used for forward and backward properties, respectively:</p>
+  <pre>conf:anonymousPropertyDescriptionQuery
+    "DESCRIBE ?that WHERE {?__this__ ?__property__ ?that. FILTER (isBlank(?that))}";
+
+conf:anonymousInversePropertyDescriptionQuery
+    "DESCRIBE ?that WHERE {?that ?__property__ ?__this__. FILTER (isBlank(?that))}";</pre>
+  <p>The following <tt>CONSTRCUT</tt> queries may be used on SPARQL endpoints
+  that don't properly support <tt>DESCRIBE</tt> to achieve the same result:</p>
+  <pre>conf:anonymousPropertyDescriptionQuery """
+        CONSTRUCT {
+            ?__this__ ?property ?that.
+            ?that ?p ?o.
+            ?s ?p ?that.
+        }
+        WHERE {
+            ?__this__ ?__property__ ?that.
+            FILTER (isBlank(?that))
+            {
+                ?that ?p ?o.
+            } UNION {
+                ?s ?p ?that.
+            }
+        }
+    """;
+conf:anonymousInversePropertyDescriptionQuery """
+        CONSTRUCT {
+            ?that ?property ?__this__.
+            ?that ?p ?o.
+            ?s ?p ?that.
+        }
+        WHERE {
+            ?that ?__property__ ?__this__.
+            FILTER (isBlank(?that))
+            {
+                ?that ?p ?o.
+            } UNION {
+                ?s ?p ?that.
+            }
+        }
+    """;</pre>
+  <p>The following advanced example retrieves labels for all linked resources.
+  As Pubby always automatically uses labels where they are available, this will
+  cause values to be shown with nice labels rather than just as URIs. This comes
+  at a performance cost.<p>
+  <pre>conf:anonymousPropertyDescriptionQuery """
+        PREFIX rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt;
+        CONSTRUCT {
+            ?__this__ ?property ?that.
+            ?that ?p ?o.
+            ?o rdfs:label ?label.
+            ?s ?p ?that.
+            ?s rdfs:label ?label.
+        }
+        WHERE {
+            ?__this__ ?__property__ ?that.
+            FILTER (isBlank(?that))
+            {
+                ?that ?p ?o.
+                OPTIONAL { ?o rdfs:label ?label. }
+            } UNION {
+                ?s ?p ?that.
+                OPTIONAL { ?s rdfs:label ?label. }
+            }
+        }
+    """;
+conf:anonymousInversePropertyDescriptionQuery """
+        PREFIX rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt;
+        CONSTRUCT {
+            ?that ?property ?__this__.
+            ?that ?p ?o.
+            ?o rdfs:label ?label.
+            ?s ?p ?that.
+            ?s rdfs:label ?label.
+        }
+        WHERE {
+            ?that ?__property__ ?__this__.
+            FILTER (isBlank(?that))
+            {
+                ?that ?p ?o.
+                OPTIONAL { ?o rdfs:label ?label. }
+            } UNION {
+                ?s ?p ?that.
+                OPTIONAL { ?s rdfs:label ?label. }
+            }
+        }
+    """;</pre></dd>
+
 
 <dt><tt>conf:addSameAsStatements <em>"true"/"false"</em>;</tt></dt>
-<dd><p>If set to <tt>"true"</tt>, an <tt>owl:sameAs</tt> statement of the form
-  <tt>&lt;web_uri&gt; owl:sameAs &lt;dataset_uri&gt;</tt> will be present in Linked Data output.</p></dd>
-
-<dt><tt>conf:loadRDF &lt;<em>data1.rdf</em>&gt;, &lt;<em>data1.rdf</em>&gt;, ...;</tt></dt>
-<dd><p>Load one or more RDF documents from the Web or the file system and use them as the
-  data source. The SPARQL endpoint configured above will be ignored. Allows using Pubby as
-  an RDF server for publishing static RDF files.</p></dd>
+<dd><p>This may be used if the dataset defines a <tt>conf:datasetBase</tt>
+  that's different from the <tt>conf:webBase</tt>, leading to rewriting
+  of URIs. If set to <tt>"true"</tt>, an <tt>owl:sameAs</tt> statement
+  of the form <tt>&lt;web_uri&gt; owl:sameAs &lt;dataset_uri&gt;</tt>
+  will be added for every resource with a rewritten URI.</p></dd>
 
 <dt><tt>conf:rdfDocumentMetadata [ <em>statement1; statement2; ...;</em> ];</tt></dt>
 <dd>
@@ -273,61 +534,125 @@ conf:datasetURIPattern "(users|documents)/.*";</pre>
 ];</pre>
 </dd>
 
-<dt><tt>conf:metadataTemplate "metadata.ttl";</tt></dt>
+<dt><tt>conf:metadataTemplate &lt;<em>metadata.ttl</em>&gt;</tt></dt>
 <dd>
-<p>Refers to a metadata template that is used by the
+<p>Specifies a metadata template that is used by the
    <a href="http://sourceforge.net/apps/mediawiki/trdf/index.php?title=Pubby_Metadata_Extension">metadata extension</a>.
-   This file is expected in directory <tt>./WEB-INF/templates/</tt>.</p>
+  A relative URL may be used and is interpreted relative to the location of
+  the configuration file.</p>
 </dd>
 
-<dt><tt>conf:webResourcePrefix "<em>uri_prefix/</em>";</tt></dt>
-<dd><p>If present, this string will be prefixed to the mapped web URIs.
-  This is useful if you have to avoid potential name clashes with
-  URIs already used by the server itself. For example, if the dataset
-  includes a URI <tt>http://mydataset/page</tt>, and the dataset prefix
-  is <tt>http://mydataset/</tt>, then there would be a clash after mapping
-  because Pubby reserves the mapped URI <tt>http://myserver/mydataset/page</tt>
-  for its own use. In this case, you may specify a prefix like
-  <tt>"resource/"</tt>, which will result in a mapped URI of
-  <tt>http://myserver/mydataset/resource/page</tt>.</p></dd>
+<dt><tt>conf:supportsIRIs <em>true/false</em>;</tt></dt>
+<dd><p>Must be set to <code>false</code> on data sources that use URIs
+  instead of IRIs in the RDF data. For example, the English-language
+  <a href="http://dbpedia.org/">DBpedia</a> dataset
+  uses the URI <code>http://dbpedia.org/resource/Sp%C3%A4tzle</code>
+  instead of the (valid, and preferrable) IRI
+  <code>http://dbpedia.org/resource/Spätzle</code>.
+  Default: <code>true</code>.</p></dd>
 
-<dt><tt>conf:fixUnescapedCharacters "<em>abc</em>";</tt></dt>
-<dd><p>(Only needed if you have problems with funny characters in the URIs when
-  running Pubby behind an Apache proxy)</p></dd>
+<dt><tt>conf:contentType "<em>text/turtle</em>";</tt></dt>
+<dd><p>Changes the media type that will be requested from the remote SPARQL
+  server when executing <code>DESCRIBE</code> and <code>CONSTRUCT</code>
+  queries. This can be used to force communication to use Turtle instead
+  of RDF/XML to solve issues with non-serializable graphs, provided the
+  endpoint supports Turtle.</p></dd>
 
-<dt><tt>conf:redirectRDFRequestsToEndpoint <em>"true"/"false"</em>;</tt></dt>
-<dd><p>Instead of serving RDF documents, Pubby will redirect requests for
-  RDF to <tt>DESCRIBE</tt> query results on the SPARQL server. This
-  reduces Pubby's job to serving HTML descriptions of resources. All features that affect
-  the RDF output will have no effect, e.g. URI rewriting and adding of
-  <tt>owl:same</tt> statements won't work. This is useful to improve
-  performance in cases where the SPARQL dataset has been designed with Pubby publication
-  in mind.</p></dd>
+<dt><tt>conf:queryParamSelect "<em>param=value</em>";</tt></dt>
+<dd><p>Specifies an additional request parameter that will be sent to
+  the remote SPARQL endpoint in the URL for SPARQL protocol requests
+  for <code>SELECT</code> queries.</p></dd>
+
+<dt><tt>conf:queryParamGraph "<em>param=value</em>";</tt></dt>
+<dd><p>Specifies an additional request parameter that will be sent to
+  the remote SPARQL endpoint in the URL for SPARQL protocol requests
+  for <code>CONSTRUCT</code> and <code>DESCRIBE</code> queries.</p></dd>
 </dl>
 
 
-<h2>Limitations</h2>
+<h3 id="config-other">Other configuration</h3>
 
-<ul>
-  <li>Only works for SPARQL endpoint that can answer <tt>DESCRIBE</tt> queries</li>
-  <li>Multiple dataset support may not work as expected: If a requested URI is matched by the <tt>conf:datasetURIPattern</tt> of more than one dataset (or one doesn't have a <tt>conf:datasetURIPattern</tt>), then <em>only one</em> of the possible endpoints will be queried at a time. Pubby will never try to query multiple endpoints in order to create a single response. In most cases, it is recommended to simply set up a separate Pubby instance for each dataset.</li>
-  <li>Hash URIs on the web side are not supported.</li>
-</ul>
+<dl>
+<dt><tt><em>my:property</em> conf:weight <em>0</em></tt></dt>
+<dd><p>Changes the order of RDF properties in the HTML property tables by assigning
+  a weight to a property. By default, all properties are considered to have weight 0.
+  Properties with lesser weight rise higher in the list, those with greater weight sink
+  down. Weights must be integer numbers and should be between -100 and +100.
+  Property weights may be managed in an external RDF file and loaded via
+  <tt>conf:loadVocabulary</tt>.</p>
+  <p>The weight for “incoming” and “outcoming” arcs can be set separately. The incoming
+  weight is specified using the <tt>owl:inverseOf</tt> idiom:</p>
+  <pre>rdf:type conf:weight -100.
+rdf:type owl:inverseOf [ conf:weight 10 ].</pre>
+  <p>The example causes a resource's class (outgoing <tt>rdf:type</tt> arc)
+  to be displayed as the first property,
+  and if the resource is itself a class with instances
+  (incoming <tt>rdf:type</tt> arcs),
+  then the list of instances will be near the bottom.</p>
+  <p>If only an outgoing weight is specified, it will also be used for incoming
+  arcs.</p></dd>
+<dt><tt><em>my:property</em> owl:inverseOf [ rdfs:label "<em>label</em>" ]</tt></dt>
+<dd><p>When a property occurs as an incoming arc on a resource, this label will
+  be shown instead of the default “is XXX of”. Example:</p>
+  <pre>ex:parent rdfs:label "parent"@en; owl:inverseOf [ rdfs:label "child"@en ].</pre></dd>
+<dt><tt><em>my:property</em> conf:pluralLabel "<em>label</em>"</tt></dt>
+<dd><p>A label for a property to be used when the label has multiple values.
+  This should be the plural form of the property's <tt>rdfs:label</tt>.
+  An inverse plural label can also be specified using the <tt>owl:inverseOf</tt>
+  idiom. Example:</p>
+  <pre>ex:parent
+    conf:pluralLabel "parents"@en;
+    owl:inverseOf [ conf:pluralLabel "children"@en ].</pre></dd>
+<dt><tt><em>my:property</em> a conf:HighOutdegreeProperty</tt></dt>
+<dt><tt><em>my:property</em> a conf:HighIndegreeProperty</tt></dt>
+<dd><p>High-degree properties are properties that tend to have a large number of values
+  on any given resource. A high in-degree property is one that tends to contribute
+  lots of incoming arcs to some resources. A high-outdegree property is one that tends
+  to contribute lots of outgoing arcs. If this class is given to a property, then
+  Pubby puts all of its values onto a separate page. This reduces the size of the
+  resource's main page. Note that this feature has no effect on SPARQL endpoints that
+  don't support SPARQL 1.1 (see <tt>conf:supportsSPARQL11</tt>).</p></dd>
+</dl>
+
 
 <h2><a name="support" id="support"></a>Support and feedback</h2>
 
-<p>Please email <a href="mailto:richard@cyganiak.de">richard@cyganiak.de</a>.</p>
+<p>Please <a href="http://github.com/cygri/pubby/issues">raise an issue</a>
+or email <a href="mailto:richard@cyganiak.de">richard@cyganiak.de</a>.</p>
 
 <h2 id="development">Source code and development</h2>
-<p>Pubby is hosted on <a href="http://github.com/">GitHub</a>.
+<p>Pubby is open source (<a href="http://www.apache.org/licenses/LICENSE-2.0.html">Apache License, Version 2.0</a>). Pubby is hosted on <a href="http://github.com/">GitHub</a>.
   The official version of the source code is available from <a href="http://github.com/cygri/pubby">the <tt>cygri/pubby</tt> repository</a>.</p>
 
-<h2 id="acknowledgements">Acknowledgements</h2>
-<p>This project has received contributions from <a href="http://olafhartig.de/">Olaf Hartig</a> and <a href="http://www.linkedin.com/pub/boris-villazon-terrazas/5/601/1a">Boris Villazón-Terrazas</a>.</p>
+<p>You need a <a href="http://git-scm.com/">git</a> client to get the source, and <a href="http://maven.apache.org/">Apache Maven</a> to build it:</p>
 
-<div id="footer">
-  <small><!-- $Id$ --></small>
-</div>
+<pre>
+# Get source from GitHub
+git clone https://github.com/cygri/pubby.git
+cd pubby
+
+# If you work with Eclipse, create project files
+mvn eclipse:eclipse -DdownloadSources=true -DdownloadJavadocs=true
+
+# Compile and run with Jetty Maven plugin
+mvn jetty:run
+
+# Build a distribution in target/pubby.zip
+mvn clean package
+</pre>
+
+
+<h2 id="acknowledgements">Contributors</h2>
+
+<ul class="acknowledgements">
+  <li><a href="http://richard.cyganiak.de/">Richard Cyganiak</a> (Maintainer)</li>
+  <li><a href="http://www.wikier.org/">Sergio Fernández</a></li>
+  <li><a href="http://www.linkedin.com/pub/boris-villazon-terrazas/5/601/1a">Boris Villazón-Terrazas</a></li>
+  <li><a href="http://olafhartig.de/">Olaf Hartig</a></li>
+  <li><a href="http://github.com/heinlja">Jaanus Heinlaid</a></li>
+  <li><a href="http://www.linkedin.com/pub/jeremy-carroll/63/4a0/b1a">Jeremy Carroll</a></li>
+</ul>
+
 </div>
 
 </body>

@@ -4,10 +4,10 @@
   <groupId>de.fuberlin.wiwiss.pubby</groupId>
   <artifactId>pubby</artifactId>
   <packaging>war</packaging>
-  <version>0.3.3</version>
+  <version>0.4-SNAPSHOT</version>
 
-  <name>Pubby</name>
-  <description>A Linked Data Frontend for SPARQL Endpoints</description>
+  <name>GeoPubby</name>
+  <description>A Linked Data Frontend for SPARQL Endpoints with support for GeoData</description>
   <url>http://www4.wiwiss.fu-berlin.de/pubby/</url>
   <inceptionYear>2007</inceptionYear>
 
@@ -18,12 +18,6 @@
       <distribution>repo</distribution>
     </license>
   </licenses>
-
-  <scm>
-    <connection>scm:git:git@github.com:cygri/pubby.git</connection>
-    <developerConnection>scm:git:git@github.com:cygri/pubby.git</developerConnection>
-    <url>https://github.com/cygri/pubby/tree/master/</url>
-  </scm>
 
   <developers>
     <developer>
@@ -41,10 +35,12 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.test.skip>true</maven.test.skip>
+    <maven.test.failure.ignore>true</maven.test.failure.ignore>
   </properties>
 
   <dependencies>
-    <dependency>
+<dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>4.5</version>
@@ -56,10 +52,39 @@
       <version>2.4</version>
       <scope>provided</scope>
     </dependency>
+    <!-- https://mvnrepository.com/artifact/org.locationtech.jts/jts-core -->
+<dependency>
+    <groupId>org.locationtech.jts</groupId>
+    <artifactId>jts-core</artifactId>
+    <version>1.16.1</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/com.sun.xml.txw2/txw2 -->
+<dependency>
+    <groupId>com.sun.xml.txw2</groupId>
+    <artifactId>txw2</artifactId>
+    <version>20110809</version>
+</dependency>
+<dependency>
+    <groupId>org.wololo</groupId>
+    <artifactId>jts2geojson</artifactId>
+    <version>0.14.1</version>
+</dependency>
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-core</artifactId>
+      <version>3.14.0</version>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/org.json/json -->
+<dependency>
+    <groupId>org.json</groupId>
+    <artifactId>json</artifactId>
+    <version>20190722</version>
+</dependency>
+    
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
-      <version>2.11.0</version>
+      <version>3.14.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.velocity</groupId>
@@ -75,65 +100,23 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.0</version>
         <configuration>
-          <source>1.8</source>
-          <target>1.8</target>
+          <source>1.6</source>
+          <target>1.6</target>
         </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.mortbay.jetty</groupId>
-        <artifactId>jetty-maven-plugin</artifactId>
-        <version>8.1.9.v20130131</version>
-<!--
-        <configuration>
-          <webApp>
-            <contextPath>/pubby</contextPath>
-          </webApp>
-        </configuration>
--->
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <configuration>
-          <descriptors>
-            <descriptor>assembly.xml</descriptor>
-          </descriptors>
-        </configuration>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>single</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-source-plugin</artifactId>
-        <version>2.2.1</version>
-        <executions>
-          <execution>
-            <id>attach-sources</id>
-            <goals>
-              <goal>jar</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <version>2.9</version>
-        <executions>
-          <execution>
-            <id>attach-javadocs</id>
-            <goals>
-              <goal>jar</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
     </plugins>
   </build>
+  <repositories>
+		<repository>
+			<id>gitlab-maven</id>
+			<url>https://gitlab.rlp.net/api/v4/projects/11531/packages/maven</url>
+		</repository>
+	</repositories>
+	<distributionManagement>
+		<repository>
+			<id>gitlab-maven</id>
+			<url>https://gitlab.rlp.net/api/v4/projects/11531/packages/maven</url>
+		</repository>
+	</distributionManagement>
+
 </project>

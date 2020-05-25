@@ -4,13 +4,13 @@
   <small>Is</small>
 #end
 #if ($showLabels && $property.Inverse && $property.InverseLabel)
-  <a class="uri" href="$property.BrowsableURL" title="$property.URI">$property.InverseLabel</a>
+  <a class="uri" href="$property.BrowsableURL" title="$property.URI" target="_blank">$property.InverseLabel</a>
 #elseif ($showLabels && $property.label)
-  <a class="uri" href="$property.BrowsableURL" title="$property.URI">$property.label</a>
+  <a class="uri" href="$property.BrowsableURL" title="$property.URI" target="_blank">$property.label</a>
 #elseif ($property.hasPrefix())
-  <a class="uri" href="$property.BrowsableURL" title="$property.URI"><small>$property.Prefix:</small>$property.LocalName</a>
+  <a class="uri" href="$property.BrowsableURL" title="$property.URI" target="_blank"><small>$property.Prefix:</small>$property.LocalName</a>
 #else
-  <a class="uri" href="$property.BrowsableURL" title="$property.URI"><small>?:</small>$property.LocalName</a>
+  <a class="uri" href="$property.BrowsableURL" title="$property.URI" target="_blank"><small>?:</small>$property.LocalName</a>
 #end
 #if ($property.Inverse && !($showLabels && $property.InverseLabel))
   <small>of</small>

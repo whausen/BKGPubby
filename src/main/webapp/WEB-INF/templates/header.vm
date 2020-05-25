@@ -39,8 +39,9 @@
   </head>
   <body onLoad="init();">
     <div id="header">
-        <div>
+        <div><a href="https://www.gdi-de.org/">
         <img src="${server_base}static/gdilogo.jpg"/>
+        </a>
         <h1 id="title">$title</h1>
 #if ($project_name)
 #if ($project_link)

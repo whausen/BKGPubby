@@ -231,6 +231,7 @@ public class RemoteSPARQLDataSource implements DataSource {
 				result.add(s);
 			}
 		}
+		System.out.println(result.size()+" - "+result.isEmpty());
 		return result;
 	}
 

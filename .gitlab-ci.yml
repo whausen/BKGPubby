@@ -7,8 +7,8 @@ image: maven:3-jdk-10
 
 stages:
   - build
-  - deploy
   - release
+  - deploy
   - test
 
 cache:

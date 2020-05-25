@@ -39,6 +39,9 @@
   </head>
   <body onLoad="init();">
     <div id="header">
+        <div>
+        <img src="${server_base}static/gdilogo.jpg"/>
+        </div>
       <div>
         <h1 id="title">$title</h1>
 #if ($project_name)

@@ -39,20 +39,20 @@
   </head>
   <body onLoad="init();">
     <div id="header">
-        <div><a href="https://www.gdi-de.org/">
+        <div><a href="https://www.gdi-de.org/" target="_blank">
         <img src="${server_base}static/gdilogo.jpg"/>
         </a>
         <h1 id="title">$title</h1>
 #if ($project_name)
 #if ($project_link)
-        <div id="homelink">at <a href="$project_link">$project_name</a></div>
+        <div id="homelink">at <a href="$project_link" target="_blank">$project_name</a></div>
 #else
-        <div id="homelink">at <a href="$server_base">$project_name</a></div>
+        <div id="homelink">at <a href="$server_base" target="_blank">$project_name</a></div>
 #end
 #end
       </div>
 #if ($uri)
-      <div class="page-resource-uri"><a href="$uri">$uri</a></div>
+      <div class="page-resource-uri"><a href="$uri" target="_blank">$uri</a></div>
 #end
 #if ($rdf_link)
       <div id="rdficon"><a href="$rdf_link" title="RDF data"><img src="${server_base}static/rdf-icon.gif" alt="[This page as RDF]" /></a></div>

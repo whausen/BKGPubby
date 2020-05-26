@@ -73,7 +73,8 @@ public class RemoteSPARQLDataSource implements DataSource {
 			resourceQueries = supportsSPARQL11 ?
 				new HashSet<String>(Arrays.asList(new String[]{
 					"CONSTRUCT {?__this__ ?p ?o} WHERE {?__this__ ?p ?o. FILTER (?p NOT IN ?__high_outdegree_properties__)}",
-					"CONSTRUCT {?s ?p ?__this__} WHERE {?s ?p ?__this__. FILTER (?p NOT IN ?__high_indegree_properties__)}"
+					"CONSTRUCT {?s ?p ?__this__} WHERE {?s ?p ?__this__. FILTER (?p NOT IN ?__high_indegree_properties__)}",
+					"CONSTRUCT {?p ?o ?__this__} WHERE {?abc <http://www.opengis.net/ont/geosparql#hasGeometry> ?__this__ . ?__this__ ?p ?o . "
 				})) :
 				Collections.singleton("DESCRIBE ?__this__");
 		}

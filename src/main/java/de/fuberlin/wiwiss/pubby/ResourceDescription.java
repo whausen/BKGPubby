@@ -79,9 +79,7 @@ public class ResourceDescription {
 	        	Geometry geom;
 				try {
 					String epsgcode="";
-					if(r.getProperty(GEO.EPSG)!=null) {
-						epsgcode=r.getProperty(GEO.EPSG).getString();
-					}else if(literal.startsWith("<")) {
+					if(literal.startsWith("<")) {
 						epsgcode=literal.substring(literal.indexOf('<'),literal.lastIndexOf('>')).trim();
 						epsgcode=epsgcode.substring(epsgcode.lastIndexOf('/')+1);
 						literal=literal.substring(literal.lastIndexOf('>')+1).trim();

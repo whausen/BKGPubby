@@ -96,7 +96,7 @@ public class ResourceDescription {
 	 private void addGeometry(final Resource r) {
 	        StmtIterator it= resource.listProperties(GEO.ASWKT);
 	        while(it.hasNext()) {
-	            addGeometry2(it.next().getObject().asLiteral())
+	            addGeometry2(it.next().getObject().asLiteral());
 	        }
 	        it.close();
 	 }

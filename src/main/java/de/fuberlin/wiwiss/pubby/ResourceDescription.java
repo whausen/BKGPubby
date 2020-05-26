@@ -147,8 +147,11 @@ public class ResourceDescription {
 	    
 	public String getEPSG(){
 	    StmtIterator it= resource.listProperties(GEO.EPSG);
-	    Statement s = it.nextStatement();
-	    return s.getObject().asLiteral().getString();
+	    if(it.hasNext()){
+	        Statement s = it.nextStatement();
+	        return s.getObject().asLiteral().getString();
+	    }
+	    return "";
 	}
 
 	public ResourceDescription(HypermediaControls controller, Model model, 

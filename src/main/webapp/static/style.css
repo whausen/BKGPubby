@@ -4,13 +4,13 @@ body { font-family: sans-serif; font-size: 80%; margin: 0; padding: 1.2em 2em; }
 #header { border-bottom: 2px solid #BD1B1B; margin: 0 0 1.2em; padding: 0 0 0.3em; }
 #footer { border-top: 2px solid #BD1B1B; margin: 1.2em 0 0; padding: 0.3em 0 0; }
 #homelink { display: inline; }
-#homelink, #homelink a { color: #666; }
+#homelink, #homelink a { color: #007F7F; }
 #homelink a { font-weight: bold; text-decoration: none; }
 #homelink a:hover { color: red; text-decoration: underline; }
 h1 { display: inline; font-weight: normal; font-size: 200%; margin: 0; text-align: left; }
 h2 { font-weight: normal; font-size: 124%; margin: 1.2em 0 0.2em; }
 .page-resource-uri { font-size: 116%; margin: 0.2em 0; }
-.page-resource-uri a { color: #666; text-decoration: none; }
+.page-resource-uri a { color: #007F7F; text-decoration: none; }
 .page-resource-uri a:hover { color: red; text-decoration: underline; }
 img { border: none; }
 table.description { border-collapse: collapse; clear: left; font-size: 100%; margin: 0 0 1em; width: 100%; }

@@ -161,6 +161,12 @@ public class ResourceDescription {
 	        }
 	        return geoms;
 	    }
+	    
+	public String getEPSG(){
+	    StmtIterator it= resource.listProperties(GEO.EPSG);
+	    Statement s = it.nextStatement();
+	    return s.getObject().asLiteral().getString();
+	}
 
 	public ResourceDescription(HypermediaControls controller, Model model, 
 			Map<Property, Integer> highIndegreeProperties,

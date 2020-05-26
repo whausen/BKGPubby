@@ -94,29 +94,12 @@ public class ResourceDescription {
 	    }
 	 
 	 private void addGeometry(final Resource r) {
-	        final Statement wkt = r.getProperty(GEO.ASWKT);
-	        System.out.println("WKT? "+wkt.toString());
-	        if(wkt!=null) {
-	        	Geometry geom;
-				try {
-					String literal=wkt.getObject().asLiteral().getString().trim();
-					String epsgcode="";
-					if(r.getProperty(GEO.EPSG)!=null) {
-						epsgcode=r.getProperty(GEO.EPSG).getObject().asLiteral().getString();
-					}else if(literal.startsWith("<")) {
-						epsgcode=literal.substring(literal.indexOf('<'),literal.lastIndexOf('>')).trim();
-						epsgcode=epsgcode.substring(epsgcode.lastIndexOf('/')+1);
-						literal=literal.substring(literal.lastIndexOf('>')+1).trim();
-					}
-					geom = this.reader.read(literal);
-					if(!epsgcode.isEmpty())
-						geom.setSRID(Integer.valueOf(epsgcode));
-		        	geoms.add(geom);
-				} catch (ParseException e) {
-					e.printStackTrace();
-				}
+	        StmtIterator it= resource.listProperties(GEO.ASWKT);
+	        while(it.hasNext()) {
+	            addGeometry2(it.next().getObject().asLiteral())
 	        }
-	    }
+	        it.close();
+	 }
 	 
 	 private void addAllGeoms() {
 	        StmtIterator it= resource.listProperties(GEO.ASWKT);

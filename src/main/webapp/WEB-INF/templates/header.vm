@@ -50,9 +50,11 @@
         <div id="homelink">at <a href="$server_base" target="_blank">$project_name</a></div>
 #end
 #end
+<div style="float: right;">
 <a href="https://www.gdi-de.org/" target="_blank">
         <img src="${server_base}static/gdilogo.jpg"/>
         </a>
+    </div>
       </div>
 #if ($uri)
       <div class="page-resource-uri"><a href="$uri" target="_blank">$uri</a></div>

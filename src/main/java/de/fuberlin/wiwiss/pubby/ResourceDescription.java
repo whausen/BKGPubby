@@ -102,7 +102,7 @@ public class ResourceDescription {
 					String literal=wkt.getObject().asLiteral().getString().trim();
 					String epsgcode="";
 					if(r.getProperty(GEO.EPSG)!=null) {
-						epsgcode=r.getProperty(GEO.EPSG).asLiteral().getString();
+						epsgcode=r.getProperty(GEO.EPSG).getObject().asLiteral().getString();
 					}else if(literal.startsWith("<")) {
 						epsgcode=literal.substring(literal.indexOf('<'),literal.lastIndexOf('>')).trim();
 						epsgcode=epsgcode.substring(epsgcode.lastIndexOf('/')+1);

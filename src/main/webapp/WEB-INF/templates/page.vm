@@ -50,8 +50,8 @@ var map = L.map('map',{fullscreenControl: true,fullscreenControlOptions: {positi
               #end
 			  var feature = { "type": "Feature", 'properties': props, "geometry": wicket.toJson() };
 			  if(epsg!="" && epsg!="EPSG:4326" && epsg in epsgdefs){
-	            geojson=convertGeoJSON(geojson,epsgdefs[epsg])
-	            console.log(geojson);
+	            feature=convertGeoJSON(feature,epsgdefs[epsg])
+	            console.log(feature);
               }
               layerr=L.geoJson(feature,{
               onEachFeature: function (feature, layer) {

@@ -33,7 +33,7 @@ table.description .even td { background: #FFFFF0; }
 table.description .odd td { background: #E8E8E8; }
 .image { background: white; float: left; margin: 0 1.5em 1.5em 0; padding: 2px; }
 a.expander { text-decoration: none;  }
-
+a:hover { color: #007F7F; text-decoration: underline; }
 .metadata-label {
 	font-size: 100%;
 	background: #E8E8E8;

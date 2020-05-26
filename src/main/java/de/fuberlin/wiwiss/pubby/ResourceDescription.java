@@ -95,13 +95,14 @@ public class ResourceDescription {
 	 
 	 private void addGeometry(final Resource r) {
 	        final Statement wkt = r.getProperty(GEO.ASWKT);
+	        System.out.println("WKT? "+wkt.toString());
 	        if(wkt!=null) {
 	        	Geometry geom;
 				try {
 					String literal=wkt.getObject().asLiteral().getString().trim();
 					String epsgcode="";
 					if(r.getProperty(GEO.EPSG)!=null) {
-						epsgcode=r.getProperty(GEO.EPSG).getString();
+						epsgcode=r.getProperty(GEO.EPSG).asLiteral().getString();
 					}else if(literal.startsWith("<")) {
 						epsgcode=literal.substring(literal.indexOf('<'),literal.lastIndexOf('>')).trim();
 						epsgcode=epsgcode.substring(epsgcode.lastIndexOf('/')+1);

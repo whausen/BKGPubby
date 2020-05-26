@@ -91,7 +91,7 @@ public class GeoJSONWriterr implements ModelWriter {
 							if(GEO.HASGEOMETRY.getURI().equals(curst.getPredicate().getURI().toString())) {
 							    System.out.println(curst.getObject().asResource().toString());
 							    System.out.println(curst.getObject().asResource().getProperty(GEO.ASWKT).toString());
-							    System.out.println(curst.getObject().asResource().getProperty(GEO.ASWKT)getObject().toString());
+							    System.out.println(curst.getObject().asResource().getProperty(GEO.ASWKT).getObject().toString());
 								geom=reader.read(curst.getObject().asResource().getProperty(GEO.ASWKT).getObject().asLiteral().getString());
 							}else {
 								geom=reader.read(curst.getObject().asLiteral().getString());

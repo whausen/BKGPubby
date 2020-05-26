@@ -38,7 +38,7 @@ var map = L.map('map',{fullscreenControl: true,fullscreenControlOptions: {positi
         #foreach($i in $geoms)
               var wkt_geom = "${i}";
               var sridepsg="${i.getSRID()}";
-              var globalepsg="${epsg}"";
+              var globalepsg="${epsg}";
               var espg="EPSG:4326";
               if(sridepsg!="0"){
                   var epsg="EPSG:${i.getSRID()}"

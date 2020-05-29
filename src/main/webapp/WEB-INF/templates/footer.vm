@@ -2,16 +2,16 @@
     <div id="footer">
      <div class="container ">
 #if ($rdf_link)
-      <a href="$rdf_link?output=ttl">As Turtle</a> |
-      <a href="$rdf_link?output=xml">As RDF/XML</a> |
-      <a href="$rdf_link?output=json">As JSON-LD</a> |
-      <!--<a href="$rdf_link?output=trig">As TriG</a> |
-      <a href="$rdf_link?output=trix">As TriX</a> |-->
-      <a href="$rdf_link?output=geojson">As (Geo)JSON</a> 
+      <a class="footeruri" href="$rdf_link?output=ttl">As Turtle</a> |
+      <a class="footeruri" href="$rdf_link?output=xml">As RDF/XML</a> |
+      <a class="footeruri" href="$rdf_link?output=json">As JSON-LD</a> |
+      <!--<a  class="footeruri" href="$rdf_link?output=trig">As TriG</a> |
+      <a class="footeruri" href="$rdf_link?output=trix">As TriX</a> |-->
+      <a class="footeruri" href="$rdf_link?output=geojson">As (Geo)JSON</a> 
       #if (!$geoms.isEmpty())
-        | <a href="$rdf_link?output=geouri">As GeoURI</a> 
-      	| <a href="$rdf_link?output=kml">As KML</a> 
-      	| <a href="$rdf_link?output=gml">As GML</a> 
+        | <a class="footeruri" href="$rdf_link?output=geouri">As GeoURI</a> 
+      	| <a class="footeruri" href="$rdf_link?output=kml">As KML</a> 
+      	| <a class="footeruri" href="$rdf_link?output=gml">As GML</a> 
       #end
 #end
 </div>

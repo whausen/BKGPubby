@@ -12,6 +12,8 @@ h2 { font-weight: normal; font-size: 124%; margin: 1.2em 0 0.2em; }
 .page-resource-uri { font-size: 116%; margin: 0.2em 0; }
 .page-resource-uri a { color: #666; text-decoration: none; }
 .page-resource-uri a:hover { color: #007F7F; text-decoration: underline; }
+.footeruri a { color: #666; text-decoration: none; }
+.footeruri a:hover { color: #007F7F; text-decoration: underline; }
 img { border: none; }
 table.description { border-collapse: collapse; clear: left; font-size: 100%; margin: 0 0 1em; width: 100%; }
 table.description a:hover { color: #007F7F; text-decoration: underline; }

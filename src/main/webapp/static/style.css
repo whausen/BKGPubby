@@ -14,6 +14,7 @@ h2 { font-weight: normal; font-size: 124%; margin: 1.2em 0 0.2em; }
 .page-resource-uri a:hover { color: #007F7F; text-decoration: underline; }
 img { border: none; }
 table.description { border-collapse: collapse; clear: left; font-size: 100%; margin: 0 0 1em; width: 100%; }
+table.description a:hover { color: #007F7F; text-decoration: underline; }
 table.description th { background: white; text-align: left; }
 table.description td, table.description th { line-height: 1.2em; padding: 0.3em 0.5em; vertical-align: top; }
 table.description ul { margin: 0; padding-left: 1.4em; }

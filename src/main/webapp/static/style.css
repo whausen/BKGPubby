@@ -23,7 +23,7 @@ table.description .property-column { width: 13em; }
 table.description {border-left: 3px solid #8C8C8C; border-top: 3px solid #8C8C8C; border-bottom: 3px solid #8C8C8C; border-right: 3px solid #8C8C8C}
 .uri { white-space: nowrap; }
 .uri a, a.uri { text-decoration: none; }
-.uri a:hover { color: #007F7F; text-decoration: underline; }
+a.uri:hover { color: #007F7F; text-decoration: underline; }
 .unbound { color: #888; }
 table.description a small, .metadata-table a small  { font-size: 100%; color: #55a; }
 table.description small, .metadata-table a small  { font-size: 100%; color: #666; }

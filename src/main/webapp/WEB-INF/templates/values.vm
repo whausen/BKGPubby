@@ -23,7 +23,11 @@
     #end
 #end
 #elseif ($value.Node.isLiteral())
-    <span class="literal">$value.Node.LiteralLexicalForm
+    #if $value.Node.LiteralLexicalForm.toString().startsWith("www.")
+        <span class="literal"><a href="http://${value.Node.LiteralLexicalForm}" target="_blank">$value.Node.LiteralLexicalForm</a>
+    #else
+        <span class="literal">$value.Node.LiteralLexicalForm    
+    #end
 #if ($value.DatatypeLabel)
       <small> ($value.DatatypeLabel)</small>
 #end

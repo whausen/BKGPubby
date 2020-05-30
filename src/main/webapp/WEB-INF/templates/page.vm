@@ -53,7 +53,12 @@ var map = L.map('map',{fullscreenControl: true,fullscreenControlOptions: {positi
                   #if($x < 10)
                      props["${property.BrowsableURL}"]=[
                      #foreach ($propval in $properties.SimpleValues)
-                        "${propval}"#if( $foreach.hasNext ),#end
+                        #if ($propval.Node.isURI())
+                            "$propval.BrowsableURL"
+                        #elseif ($propval.Node.isLiteral())
+                            "${$value.Node.LiteralLexicalForm}"
+                        #end
+                        #if( $foreach.hasNext ),#end
                      #end
                      ]
                   #end

@@ -60,7 +60,7 @@ var map = L.map('map',{fullscreenControl: true,fullscreenControlOptions: {positi
                         #end
                         #if( $foreach.hasNext ),#end
                      #end
-                     ]
+                    ]
                   #end
                   #set($x = $x+1)
               #end
@@ -79,10 +79,10 @@ var map = L.map('map',{fullscreenControl: true,fullscreenControlOptions: {positi
                         	popup+="<li>"+prop+" - "
                         }
                         if(feature.properties[prop].length<=1){
-                            if((typeof feature.properties[prop][val] !== 'undefined') && feature.properties[prop][val].includes("http")){
-                        	        popup+="<a href=\""+feature.properties[prop][val]+"\" target=\"_blank\">"+feature.properties[prop][val].substring(feature.properties[prop][val].lastIndexOf('/')+1)+"</a></li>"
+                            if((typeof feature.properties[prop][0] !== 'undefined') && feature.properties[prop][0].includes("http")){
+                        	        popup+="<a href=\""+feature.properties[prop][0]+"\" target=\"_blank\">"+feature.properties[prop][0].substring(feature.properties[prop][0].lastIndexOf('/')+1)+"</a></li>"
                             }else{
-                        	        popup+=feature.properties[prop][val]+"</li>"
+                        	        popup+=feature.properties[prop][0]+"</li>"
                             }
                         }else{
                             popup+="<ul>"

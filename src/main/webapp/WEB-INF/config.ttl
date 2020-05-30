@@ -26,6 +26,7 @@
 @prefix wdt: <http://www.wikidata.org/prop/direct/> .
 @prefix wd: <http://www.wikidata.org/entity/> .
 @prefix ld-gdi: <http://ld.gdi-de.org/> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
 @prefix geosparql: <http://www.opengis.net/ont/geosparql#> .
 @prefix sesame: <http://www.openrdf.org/schema/sesame#> .
 @prefix inspire: <http://inspire.ec.europa.eu/> .

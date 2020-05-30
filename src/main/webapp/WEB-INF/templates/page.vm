@@ -51,7 +51,11 @@ var map = L.map('map',{fullscreenControl: true,fullscreenControlOptions: {positi
               #set($x = 0)
               #foreach ($property in $properties)
                   #if($x < 10)
-                     props["${property.BrowsableURL}"]="${property.SimpleValues}"
+                     props["${property.BrowsableURL}"]=[
+                     #foreach ($propval in $properties.SimpleValues)
+                        "${propval}"#if( $foreach.hasNext ),#end
+                     #end
+                     ]
                   #end
                   #set($x = $x+1)
               #end
@@ -69,10 +73,23 @@ var map = L.map('map',{fullscreenControl: true,fullscreenControlOptions: {positi
                         }else{
                         	popup+="<li>"+prop+" - "
                         }
-                        if((typeof feature.properties.prop !== 'undefined') && feature.properties.prop.includes("http")){
-                        	popup+="<a href=\""+feature.properties.prop+"\" target=\"_blank\">"+prop.substring(feature.properties.prop.lastIndexOf('/')+1)+"</a></li>"
+                        if(feature.properties[prop].length<=1){
+                            if((typeof feature.properties[prop][val] !== 'undefined') && feature.properties[prop][val].includes("http")){
+                        	        popup+="<a href=\""+feature.properties[prop][val]+"\" target=\"_blank\">"+feature.properties[prop][val].substring(feature.properties[prop][val].lastIndexOf('/')+1)+"</a></li>"
+                            }else{
+                        	        popup+=feature.properties[prop][val]+"</li>"
+                            }
                         }else{
-                        	popup+=feature.properties.prop+"</li>"
+                            popup+="<ul>"
+                            for(val in feature.properties[prop]){
+                                popup+="<li>"
+                                if((typeof feature.properties[prop][val] !== 'undefined') && feature.properties[prop][val].includes("http")){
+                        	        popup+="<a href=\""+feature.properties[prop][val]+"\" target=\"_blank\">"+feature.properties[prop][val].substring(feature.properties[prop][val].lastIndexOf('/')+1)+"</a></li>"
+                                }else{
+                        	        popup+=feature.properties[prop][val]+"</li>"
+                                }
+                            }
+                            popup+="</ul></li>"
                         }
                     }
                     popup+="</ul>"

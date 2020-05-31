@@ -82,7 +82,7 @@ var map = L.map('map',{fullscreenControl: true,fullscreenControlOptions: {positi
                 return L.marker(latlng, {icon: greenIcon});
               },
               onEachFeature: function (feature, layer) {
-              		var popup="<b><a href=\"$uri\" target=\"_blank\">$title</a></b><br/><ul>"
+              		var popup="<b><a href=\"$uri\" class=\"footeruri\" target=\"_blank\">$title</a></b><br/><ul>"
                     for(prop in feature.properties){
                         if((typeof prop !== 'undefined') && prop.includes("http")){
                         	popup+="<li><a href=\""+prop+"\" target=\"_blank\" class=\"uri\">"+prop.substring(prop.lastIndexOf('/')+1)+"</a> - "

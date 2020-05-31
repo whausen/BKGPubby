@@ -24,7 +24,7 @@ table.description ul { margin: 0; padding-left: 1.4em; }
 table.description li { list-style-position: outside; list-style-type: square; margin-left: 0; padding-left: 0; }
 table.description .property-column { width: 13em; }
 table.description {border-left: 3px solid #8C8C8C; border-top: 3px solid #8C8C8C; border-bottom: 3px solid #8C8C8C; border-right: 3px solid #8C8C8C}
-.uri { white-space: nowrap; }
+.uri { white-space: nowrap; color: #BD1B1B; }
 .uri a, a.uri { text-decoration: none; color: #BD1B1B; }
 a.uri:hover { color: #007F7F; text-decoration: underline; }
 .unbound { color: #888; }

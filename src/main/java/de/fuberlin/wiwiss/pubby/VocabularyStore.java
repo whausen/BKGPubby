@@ -59,10 +59,14 @@ public class VocabularyStore {
 	}
 
 	public Literal getLabel(String iri, boolean preferPlural, String language) {
+		System.out.println(labels.toString());
+		System.out.println("Getting property label: "+iri);
 		if (preferPlural) {
 			Literal pluralLabel = pluralLabels.get(iri, language);
+			System.out.println("Getting property label plural: "+pluralLabel);
 			return pluralLabel == null ? getLabel(iri, false, language) : pluralLabel;
 		}
+		System.out.println("Getting property label normal: "+labels.get(iri, language));
 		return labels.get(iri, language);
 	}
 

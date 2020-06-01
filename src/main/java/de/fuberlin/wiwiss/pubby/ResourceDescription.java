@@ -517,6 +517,7 @@ public class ResourceDescription {
 			this.isInverse = isInverse;
 			StmtIterator iterator = predicate.listProperties(RDFS.label);
 			this.labels=new LinkedList<LiteralLabel>();
+			System.out.println(predicate.getURI()+" has Labels? - "+iterator.hasNext());
 			while(iterator.hasNext()) {
 				LiteralLabel lit=iterator.next().asTriple().getObject().getLiteral();
 				System.out.println(predicate.getURI()+" - "+lit.toString());

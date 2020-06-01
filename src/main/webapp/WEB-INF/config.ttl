@@ -58,6 +58,7 @@
     # If labels and descriptions are available in multiple languages,
     # prefer this one.
     conf:defaultLanguage "en";
+    conf:showLabels "true"^^xsd:boolean;
     # When the homepage of the server is accessed, this resource will
     # be shown.
     # conf:indexResource <http://ld.gdi-de.org/id/de.bund.bkg.poi/POI>;

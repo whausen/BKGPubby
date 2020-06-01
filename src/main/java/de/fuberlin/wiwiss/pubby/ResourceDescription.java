@@ -21,7 +21,6 @@ import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTReader;
 
 import org.apache.jena.graph.Node;
-import org.apache.jena.graph.impl.LiteralLabel;
 import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Property;
@@ -32,7 +31,6 @@ import org.apache.jena.rdf.model.StmtIterator;
 import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.shared.impl.PrefixMappingImpl;
 import org.apache.jena.vocabulary.RDF;
-import org.apache.jena.vocabulary.RDFS;
 import org.apache.jena.vocabulary.XSD;
 
 import de.fuberlin.wiwiss.pubby.VocabularyStore.CachedPropertyCollection;
@@ -424,19 +422,8 @@ public class ResourceDescription {
 			return getLabel(isMultiValued());
 		}
 		public String getLabel(boolean preferPlural) {
-			System.out.println("Getting label (plural)? "+predicate.getURI());
 			Literal label = vocabularyStore.getLabel(predicate.getURI(), preferPlural);
-			System.out.println("Found label: "+label);
-			if (label == null) {
-				StmtIterator iter=predicate.listProperties(RDFS.label);
-				if(iter.hasNext()) {
-					String labelprop=iter.next().getObject().asLiteral().getString();
-					System.out.println("Got Label for Prop: "+labelprop);
-					return labelprop;
-				}else {
-					return null;
-				}
-			}			
+			if (label == null) return null;
 			return toTitleCase(label.getLexicalForm(), label.getLanguage());
 		}
 		public String getInverseLabel() {
@@ -517,7 +504,7 @@ public class ResourceDescription {
 	private class PropertyBuilder {
 		private final Property predicate;
 		private final boolean isInverse;
-		//private final List<LiteralLabel> labels;
+		private final List<Literal> labels;
 		private final List<Value> values = new ArrayList<Value>();
 		private final List<ResourceDescription> blankNodeDescriptions = 
 				new ArrayList<ResourceDescription>();
@@ -526,15 +513,42 @@ public class ResourceDescription {
 		PropertyBuilder(Property predicate, boolean isInverse, VocabularyStore vocabularyStore) {
 			this.predicate = predicate;
 			this.isInverse = isInverse;
-			/*StmtIterator iterator = predicate.listProperties(RDFS.label);
-			this.labels=new LinkedList<LiteralLabel>();
-			System.out.println(predicate.getURI()+" has Labels? - "+iterator.hasNext());
-			while(iterator.hasNext()) {
-				LiteralLabel lit=iterator.next().asTriple().getObject().getLiteral();
-				System.out.println(predicate.getURI()+" - "+lit.toString());
-				this.labels.add(lit);
-			}*/
+			this.labels=new LinkedList<Literal>();
 			this.vocabularyStore = vocabularyStore;
+		}
+		
+		void addLabel(RDFNode valueNode) {
+			if (valueNode.isAnon()) {
+				blankNodeDescriptions.add(new ResourceDescription(
+						valueNode.asResource(), getModel(), config));
+				return;
+			}
+			values.add(new Value(valueNode, predicate, vocabularyStore));
+		}
+		
+		public String getLabel() {
+			System.out.println("Getting label for "+predicate.toString());
+			System.out.println(predicate.listProperties(model.createProperty("http://www.w3.org/2000/01/rdf-schema#label")).next().getString());
+			if (!predicate.isResource()) return null;
+			System.out.println(predicate.toString()+" is a resource!");
+			Literal result = null;
+			if (predicate.isURIResource()) {
+				if (predicate.equals(RDF.type)) {
+					// Look up class labels in vocabulary store
+					result = vocabularyStore.getLabel(predicate.asNode().getURI(), false);
+				} else if (predicate.isURIResource()) {
+					// If it's not a class, see if we happen to have a label cached
+					result = vocabularyStore.getCachedLabel(predicate.asResource().getURI(), false);
+					System.out.println("HasCachedLabel? "+result.toString());
+				}
+			}
+			if (result == null) {
+				// Use any label that may be included in the description model
+				result = new ResourceDescription(predicate.asResource(), model, config).getLabel();
+				System.out.println("Resource has label? "+result.toString());
+			}
+			if (result == null) return null;
+			return toTitleCase(result.getLexicalForm(), result.getLanguage());
 		}
 		
 		void addValue(RDFNode valueNode) {

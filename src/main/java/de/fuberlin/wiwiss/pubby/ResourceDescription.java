@@ -521,7 +521,7 @@ public class ResourceDescription {
 			while(iterator.hasNext()) {
 				LiteralLabel lit=iterator.next().asTriple().getObject().getLiteral();
 				System.out.println(predicate.getURI()+" - "+lit.toString());
-				this.labels.add(iterator.next().asTriple().getObject().getLiteral());
+				this.labels.add(lit);
 			}
 			this.vocabularyStore = vocabularyStore;
 		}

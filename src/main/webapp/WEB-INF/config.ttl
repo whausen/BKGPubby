@@ -88,7 +88,7 @@
         conf:resourceDescriptionQuery "CONSTRUCT { ?__this__ ?p ?o } WHERE { ?__this__ ?p ?o }";
         conf:resourceDescriptionQuery "CONSTRUCT { ?s ?p ?__this__ } WHERE { ?s ?p ?__this__ }";
         conf:resourceDescriptionQuery "CONSTRUCT { ?__this__ ?p ?o } WHERE { VALUES ?p { <http://www.opengis.net/ont/geosparql#asWKT> <http://www.opengis.net/ont/geosparql#epsg> <http://www.opengis.net/ont/geosparql#asGML> } . ?__this__ <http://www.opengis.net/ont/geosparql#hasGeometry> ?geo . ?geo ?p ?o . }";
-        # conf:resourceDescriptionQuery "CONSTRUCT { ?__this__ ?p ?o . ?p <http://www.w3.org/2000/01/rdf-schema#label> ?label . } WHERE { ?__this__ ?p ?obj . ?p  <http://www.w3.org/2000/01/rdf-schema#label> ?label . }";
+        conf:resourceDescriptionQuery "CONSTRUCT { ?__this__ ?p ?o . ?p <http://www.w3.org/2000/01/rdf-schema#label> ?label . } WHERE { ?__this__ ?p ?obj . ?p  <http://www.w3.org/2000/01/rdf-schema#label> ?label . }";
         
         # Queries for describing the blank nodes related to a given resource via a given property.
         # The resource and the property should be denoted by "?__this__" and "?__property__".

@@ -428,7 +428,9 @@ public class ResourceDescription {
 			if (label == null) {
 				StmtIterator iter=predicate.listProperties(RDFS.label);
 				if(iter.hasNext()) {
-					return iter.next().getObject().asLiteral().getString();
+					String labelprop=iter.next().getObject().asLiteral().getString();
+					System.out.println("Got Label for Prop: "+labelprop);
+					return labelprop;
 				}else {
 					return null;
 				}

@@ -513,7 +513,7 @@ public class ResourceDescription {
 	private class PropertyBuilder {
 		private final Property predicate;
 		private final boolean isInverse;
-		private final List<LiteralLabel> labels;
+		//private final List<LiteralLabel> labels;
 		private final List<Value> values = new ArrayList<Value>();
 		private final List<ResourceDescription> blankNodeDescriptions = 
 				new ArrayList<ResourceDescription>();
@@ -522,14 +522,14 @@ public class ResourceDescription {
 		PropertyBuilder(Property predicate, boolean isInverse, VocabularyStore vocabularyStore) {
 			this.predicate = predicate;
 			this.isInverse = isInverse;
-			StmtIterator iterator = predicate.listProperties(RDFS.label);
+			/*StmtIterator iterator = predicate.listProperties(RDFS.label);
 			this.labels=new LinkedList<LiteralLabel>();
 			System.out.println(predicate.getURI()+" has Labels? - "+iterator.hasNext());
 			while(iterator.hasNext()) {
 				LiteralLabel lit=iterator.next().asTriple().getObject().getLiteral();
 				System.out.println(predicate.getURI()+" - "+lit.toString());
 				this.labels.add(lit);
-			}
+			}*/
 			this.vocabularyStore = vocabularyStore;
 		}
 		

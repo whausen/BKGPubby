@@ -82,7 +82,7 @@ public class RemoteSPARQLDataSource implements DataSource {
 		if (propertyQueries == null || propertyQueries.isEmpty()) {
 			propertyQueries = new HashSet<String>(Arrays.asList(new String[]{
 					"CONSTRUCT {?__this__ ?__property__ ?x} WHERE {?__this__ ?__property__ ?x. FILTER (!isBlank(?x))}",
-					"CONSTRUCT {?__property__ <http://www.w3.org/2000/01/rdf-schema#label> ?x} WHERE {?__this__ ?__property__ ?x. FILTER (!isBlank(?x))}"
+					"CONSTRUCT {?__this__ ?__property__ ?label } WHERE {?__this__ ?__property__ ?x. ?__property__ <http://www.w3.org/2000/01/rdf-schema#label> ?label . FILTER (!isBlank(?x))}"
 				}));
 		}
 		if (inversePropertyQueries == null || inversePropertyQueries.isEmpty()) {

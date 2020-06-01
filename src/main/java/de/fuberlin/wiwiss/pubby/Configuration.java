@@ -19,6 +19,7 @@ import org.apache.jena.vocabulary.DC;
 import org.apache.jena.vocabulary.DCTerms;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
+import org.apache.jena.vocabulary.SKOS;
 import org.apache.jena.vocabulary.XSD;
 
 import de.fuberlin.wiwiss.pubby.sources.DataSource;
@@ -80,6 +81,7 @@ public class Configuration extends ResourceReader {
 			labelProperties.add(DC.title);
 			labelProperties.add(DCTerms.title);
 			labelProperties.add(FOAF.name);
+			labelProperties.add(SKOS.prefLabel);
 		}
 		commentProperties = getProperties(CONF.commentProperty);
 		if (commentProperties.isEmpty()) {

@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -503,6 +504,7 @@ public class ResourceDescription {
 	private class PropertyBuilder {
 		private final Property predicate;
 		private final boolean isInverse;
+		private final List<Literal> labels;
 		private final List<Value> values = new ArrayList<Value>();
 		private final List<ResourceDescription> blankNodeDescriptions = 
 				new ArrayList<ResourceDescription>();
@@ -511,8 +513,44 @@ public class ResourceDescription {
 		PropertyBuilder(Property predicate, boolean isInverse, VocabularyStore vocabularyStore) {
 			this.predicate = predicate;
 			this.isInverse = isInverse;
+			this.labels=new LinkedList<Literal>();
 			this.vocabularyStore = vocabularyStore;
 		}
+		
+		void addLabel(RDFNode valueNode) {
+			if (valueNode.isAnon()) {
+				blankNodeDescriptions.add(new ResourceDescription(
+						valueNode.asResource(), getModel(), config));
+				return;
+			}
+			values.add(new Value(valueNode, predicate, vocabularyStore));
+		}
+		
+		public String getLabel() {
+			System.out.println("Getting label for "+predicate.toString());
+			System.out.println(predicate.listProperties(model.createProperty("http://www.w3.org/2000/01/rdf-schema#label")).next().getString());
+			if (!predicate.isResource()) return null;
+			System.out.println(predicate.toString()+" is a resource!");
+			Literal result = null;
+			if (predicate.isURIResource()) {
+				if (predicate.equals(RDF.type)) {
+					// Look up class labels in vocabulary store
+					result = vocabularyStore.getLabel(predicate.asNode().getURI(), false);
+				} else if (predicate.isURIResource()) {
+					// If it's not a class, see if we happen to have a label cached
+					result = vocabularyStore.getCachedLabel(predicate.asResource().getURI(), false);
+					System.out.println("HasCachedLabel? "+result.toString());
+				}
+			}
+			if (result == null) {
+				// Use any label that may be included in the description model
+				result = new ResourceDescription(predicate.asResource(), model, config).getLabel();
+				System.out.println("Resource has label? "+result.toString());
+			}
+			if (result == null) return null;
+			return toTitleCase(result.getLexicalForm(), result.getLanguage());
+		}
+		
 		void addValue(RDFNode valueNode) {
 			if (valueNode.isAnon()) {
 				blankNodeDescriptions.add(new ResourceDescription(

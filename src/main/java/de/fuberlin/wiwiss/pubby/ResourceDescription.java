@@ -519,7 +519,7 @@ public class ResourceDescription {
 			this.labels=new LinkedList<LiteralLabel>();
 			while(iterator.hasNext()) {
 				LiteralLabel lit=iterator.next().asTriple().getObject().getLiteral();
-				System.out.println(lit.toString());
+				System.out.println(predicate.getURI()+" - "+lit.toString());
 				this.labels.add(iterator.next().asTriple().getObject().getLiteral());
 			}
 			this.vocabularyStore = vocabularyStore;

@@ -61,7 +61,7 @@
     conf:showLabels "true"^^xsd:boolean;
     # When the homepage of the server is accessed, this resource will
     # be shown.
-    conf:indexResource <http://ld.gdi-de.org/id/de.bund.bkg.poi/71f40b18-93af-46c2-8985-a632f1d34c3e>;
+    # conf:indexResource <http://ld.gdi-de.org/id/de.bund.bkg.poi/71f40b18-93af-46c2-8985-a632f1d34c3e>;
     # Will be appended to the conf:webBase to form the public
     # resource URIs; if not present, defaults to ""
     # conf:webResourcePrefix "resource/";

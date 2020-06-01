@@ -424,7 +424,9 @@ public class ResourceDescription {
 			return getLabel(isMultiValued());
 		}
 		public String getLabel(boolean preferPlural) {
+			System.out.println("Getting label (plural)? "+predicate.getURI());
 			Literal label = vocabularyStore.getLabel(predicate.getURI(), preferPlural);
+			System.out.println("Found label: "+label);
 			if (label == null) {
 				StmtIterator iter=predicate.listProperties(RDFS.label);
 				if(iter.hasNext()) {

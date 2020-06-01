@@ -21,6 +21,7 @@ import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTReader;
 
 import org.apache.jena.graph.Node;
+import org.apache.jena.graph.impl.LiteralLabel;
 import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Property;
@@ -31,6 +32,7 @@ import org.apache.jena.rdf.model.StmtIterator;
 import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.shared.impl.PrefixMappingImpl;
 import org.apache.jena.vocabulary.RDF;
+import org.apache.jena.vocabulary.RDFS;
 import org.apache.jena.vocabulary.XSD;
 
 import de.fuberlin.wiwiss.pubby.VocabularyStore.CachedPropertyCollection;
@@ -504,7 +506,7 @@ public class ResourceDescription {
 	private class PropertyBuilder {
 		private final Property predicate;
 		private final boolean isInverse;
-		private final List<Literal> labels;
+		private final List<LiteralLabel> labels;
 		private final List<Value> values = new ArrayList<Value>();
 		private final List<ResourceDescription> blankNodeDescriptions = 
 				new ArrayList<ResourceDescription>();
@@ -513,7 +515,13 @@ public class ResourceDescription {
 		PropertyBuilder(Property predicate, boolean isInverse, VocabularyStore vocabularyStore) {
 			this.predicate = predicate;
 			this.isInverse = isInverse;
-			this.labels=new LinkedList<Literal>();
+			StmtIterator iterator = predicate.listProperties(RDFS.label);
+			this.labels=new LinkedList<LiteralLabel>();
+			while(iterator.hasNext()) {
+				LiteralLabel lit=iterator.next().asTriple().getObject().getLiteral();
+				System.out.println(lit.toString());
+				this.labels.add(iterator.next().asTriple().getObject().getLiteral());
+			}
 			this.vocabularyStore = vocabularyStore;
 		}
 		

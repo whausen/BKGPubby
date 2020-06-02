@@ -112,7 +112,7 @@ var map = L.map('map',{fullscreenControl: true,fullscreenControlOptions: {positi
                         	        popup+="<a href=\""+feature.properties[prop][0]["uri"]+"\" class=\"uri\" target=\"_blank\">"+feature.properties[prop][0]["uri"].substring(feature.properties[prop][0]["uri"].lastIndexOf('/')+1)+"</a></li>"
                             }else if((typeof feature.properties[prop][0]["uri"] !== 'undefined') && feature.properties[prop][0]["uri"].startsWith("www.")){
                                     popup+="<a href=\"http://"+feature.properties[prop][0]["uri"]+"\" class=\"uri\" target=\"_blank\">"+feature.properties[prop][0]["uri"]+"</a></li>"
-                            }else if((typeof feature.properties[prop][0]["uri"] !== 'undefined') && feature.properties[prop][0].includes("@")){
+                            }else if((typeof feature.properties[prop][0]["uri"] !== 'undefined') && feature.properties[prop][0]["uri"].includes("@")){
                                     popup+="<a href=\"mailto:"+feature.properties[prop][0]["uri"]+"\" class=\"uri\" target=\"_blank\">"+feature.properties[prop][0]["uri"]+"</a></li>"
                             }else{
                         	        popup+=feature.properties[prop][0]+"</li>"
@@ -123,9 +123,9 @@ var map = L.map('map',{fullscreenControl: true,fullscreenControlOptions: {positi
                                 popup+="<li>"
                                 if((typeof feature.properties[prop][val]["uri"] !== 'undefined') && feature.properties[prop][val]["uri"].startsWith("http")){
                         	        popup+="<a href=\""+feature.properties[prop][val]["uri"]+"\" class=\"uri\" target=\"_blank\">"+feature.properties[prop][val]["uri"].substring(feature.properties[prop][val]["uri"].lastIndexOf('/')+1)+"</a></li>"
-                                }else if((typeof feature.properties[prop][val]["uri"] !== 'undefined') && feature.properties[prop][val].startsWith("www.")){
+                                }else if((typeof feature.properties[prop][val]["uri"] !== 'undefined') && feature.properties[prop][val]["uri"].startsWith("www.")){
                                     popup+="<a href=\"http://"+feature.properties[prop][val]["uri"]+"\" class=\"uri\" target=\"_blank\">"+feature.properties[prop][val]["uri"]+"</a></li>"
-                                }else if((typeof feature.properties[prop][val]["uri"] !== 'undefined') && feature.properties[prop][val].includes("@")){
+                                }else if((typeof feature.properties[prop][val]["uri"] !== 'undefined') && feature.properties[prop][val]["uri"].includes("@")){
                                     popup+="<a href=\"mailto:"+feature.properties[prop][val]["uri"]+"\" class=\"uri\" target=\"_blank\">"+feature.properties[prop][val]["uri"]+"</a></li>"
                                 }else{
                         	        popup+=feature.properties[prop][val]["uri"]+"</li>"

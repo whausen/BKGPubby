@@ -31,7 +31,7 @@
         <span class="literal">$value.Node.LiteralLexicalForm    
     #end
 #if ($value.DatatypeLabel)
-      <small> ($value.DatatypeLabel)</small>
+      <small> <a href="$value.DatatypeURI">($value.DatatypeLabel)</a></small>
 #end
 #if ($value.Node.LiteralLanguage != "")
       <small> ($value.Node.LiteralLanguage)</small>

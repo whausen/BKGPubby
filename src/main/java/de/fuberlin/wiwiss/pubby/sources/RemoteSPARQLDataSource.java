@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -237,6 +238,19 @@ public class RemoteSPARQLDataSource implements DataSource {
 			}
 		}
 		System.out.println(result.size()+" - "+result.isEmpty());
+		return result;
+	}
+	
+	public Map<String,Resource> getLabelIndex(){
+		Map<String,Resource> result=new TreeMap<String,Resource>();
+		ResultSet rs = execQuerySelect(
+				"SELECT DISTINCT ?s ?label { " +
+				"?s <http://www.w3.org/2000/01/rdf-schema#label> ?label . " +
+				"} LIMIT " + DataSource.MAX_INDEX_SIZE*2);
+		while (rs.hasNext()) {
+			QuerySolution st=rs.next();
+			result.put(st.getLiteral("label").getString(),st.getResource("s"));
+		}
 		return result;
 	}
 

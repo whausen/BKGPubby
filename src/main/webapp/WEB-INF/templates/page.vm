@@ -66,7 +66,7 @@ var map = L.map('map',{fullscreenControl: true,fullscreenControlOptions: {positi
                         #elseif ($propval.Node.isLiteral())
                             {"uri":"${propval.Node.LiteralLexicalForm}","proplabel":
                             #if ($showLabels && $property.label)
-                                "$property.Prefix:$property.LocalName"
+                                "$property.label"
                             #elseif($property.hasPrefix())
                                 "$property.Prefix:$property.LocalName"
                             #else

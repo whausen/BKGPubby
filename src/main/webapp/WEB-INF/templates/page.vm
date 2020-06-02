@@ -54,9 +54,25 @@ var map = L.map('map',{fullscreenControl: true,fullscreenControlOptions: {positi
                      props["${property.BrowsableURL}"]=[
                      #foreach ($propval in $property.SimpleValues)
                         #if ($propval.Node.isURI())
-                            "${propval.BrowsableURL}"
+                            {"uri":"${propval.BrowsableURL}","proplabel":
+                            #if ($showLabels && $property.label)
+                                "$property.Prefix:$property.LocalName"
+                            #elseif($property.hasPrefix())
+                                "$property.Prefix:$property.LocalName"
+                            #else
+                                "?:$property.LocalName"
+                            #end
+                            }
                         #elseif ($propval.Node.isLiteral())
-                            "${propval.Node.LiteralLexicalForm}"
+                            {"uri":"${propval.Node.LiteralLexicalForm}","proplabel":
+                            #if ($showLabels && $property.label)
+                                "$property.Prefix:$property.LocalName"
+                            #elseif($property.hasPrefix())
+                                "$property.Prefix:$property.LocalName"
+                            #else
+                                "?:$property.LocalName"
+                            #end
+                            }
                         #end
                         #if( $foreach.hasNext ),#end
                      #end
@@ -84,7 +100,9 @@ var map = L.map('map',{fullscreenControl: true,fullscreenControlOptions: {positi
               onEachFeature: function (feature, layer) {
               		var popup="<b><a href=\"$uri\" class=\"footeruri\" target=\"_blank\">$title</a></b><br/><ul>"
                     for(prop in feature.properties){
-                        if((typeof prop !== 'undefined') && prop.includes("http")){
+                        if((typeof prop !== 'undefined') && feature.properties[prop]!=='undefined' && && feature.properties[prop][0]["proplabel"]!=='undefined'){
+                            popup+="<li><a href=\""+prop+"\" target=\"_blank\" class=\"uri\">"+feature.properties[prop][0]["proplabel"]+"</a> - "
+                        }else if((typeof prop !== 'undefined') && prop.includes("http")){
                         	popup+="<li><a href=\""+prop+"\" target=\"_blank\" class=\"uri\">"+prop.substring(prop.lastIndexOf('/')+1)+"</a> - "
                         }else{
                         	popup+="<li>"+prop+" - "

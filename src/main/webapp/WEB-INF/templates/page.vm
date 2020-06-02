@@ -56,7 +56,7 @@ var map = L.map('map',{fullscreenControl: true,fullscreenControlOptions: {positi
                         #if ($propval.Node.isURI())
                             {"uri":"${propval.BrowsableURL}","proplabel":
                             #if ($showLabels && $property.label)
-                                "$property.Prefix:$property.LocalName"
+                                "$property.label"
                             #elseif($property.hasPrefix())
                                 "$property.Prefix:$property.LocalName"
                             #else
@@ -115,7 +115,7 @@ var map = L.map('map',{fullscreenControl: true,fullscreenControlOptions: {positi
                             }else if((typeof feature.properties[prop][0]["uri"] !== 'undefined') && feature.properties[prop][0]["uri"].includes("@")){
                                     popup+="<a href=\"mailto:"+feature.properties[prop][0]["uri"]+"\" class=\"uri\" target=\"_blank\">"+feature.properties[prop][0]["uri"]+"</a></li>"
                             }else{
-                        	        popup+=feature.properties[prop][0]+"</li>"
+                        	        popup+=feature.properties[prop][0]["uri"]+"</li>"
                             }
                         }else{
                             popup+="<ul>"

@@ -10,9 +10,9 @@
         <a class="uri" href="$value.BrowsableURL" title="$value.Node.URI" target="_blank">$value.label
     #end
     #if($value.hasPrefix())
-        (<small>$property.Prefix:</small>$property.LocalName)
+        (<small>$value.Prefix:</small>$value.LocalName)
     #else
-        (<small>?:</small>$property.LocalName)
+        (<small>?:</small>$value.LocalName)
     #end
     </a>
 #elseif ($value.hasPrefix())

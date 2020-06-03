@@ -29,7 +29,7 @@
     #end
 #end
 #elseif ($value.Node.isLiteral())
-    #if ($value.Node.LiteralLexicalForm.toString().startsWith("www."))
+    #if ($value.Node.LiteralLexicalForm.toString().startsWith("www.") || $value.Node.LiteralLexicalForm.toString().startsWith("http"))
         <span class="literal"><a href="http://${value.Node.LiteralLexicalForm}" target="_blank">$value.Node.LiteralLexicalForm</a>
     #elseif ($value.Node.LiteralLexicalForm.toString().contains("@"))
         <span class="literal"><a href="mailto:${value.Node.LiteralLexicalForm}" target="_blank">$value.Node.LiteralLexicalForm</a>

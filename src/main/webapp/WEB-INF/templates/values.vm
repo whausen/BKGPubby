@@ -5,10 +5,16 @@
 #if ($value.Node.isURI())
 #if ($showLabels && $value.label)
     #if ($value.BrowsableURL.toString().contains($server_base.toString()))
-        <a class="uri" href="$value.BrowsableURL" title="$value.Node.URI">$value.label</a>
+        <a class="uri" href="$value.BrowsableURL" title="$value.Node.URI">$value.label
     #else
-        <a class="uri" href="$value.BrowsableURL" title="$value.Node.URI" target="_blank">$value.label</a>
+        <a class="uri" href="$value.BrowsableURL" title="$value.Node.URI" target="_blank">$value.label
     #end
+    #if($value.hasPrefix())
+        (<small>$property.Prefix:</small>$property.LocalName)
+    #else
+        (<small>?:</small>$property.LocalName)
+    #end
+    </a>
 #elseif ($value.hasPrefix())
     #if ($value.BrowsableURL.toString().contains($server_base.toString()))
         <a class="uri" href="$value.BrowsableURL" title="$value.Node.URI"><small>$value.Prefix:</small>$value.LocalName</a>

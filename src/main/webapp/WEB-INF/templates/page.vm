@@ -62,6 +62,14 @@ var map = L.map('map',{fullscreenControl: true,fullscreenControlOptions: {positi
                             #else
                                 "?:$property.LocalName"
                             #end
+                            ,"vallabel":
+                            #if ($showLabels && $propval.label)
+                                "$propval.label"
+                            #elseif($propval.hasPrefix())
+                                "$propval.Prefix:$propval.LocalName"
+                            #else
+                                "?:$propval.LocalName"
+                            #end
                             }
                         #elseif ($propval.Node.isLiteral())
                             {"uri":"${propval.Node.LiteralLexicalForm}","proplabel":
@@ -109,11 +117,26 @@ var map = L.map('map',{fullscreenControl: true,fullscreenControlOptions: {positi
                         }
                         if(feature.properties[prop].length<=1){
                             if((typeof feature.properties[prop][0] !== 'undefined') && feature.properties[prop][0]["uri"].startsWith("http")){
-                        	        popup+="<a href=\""+feature.properties[prop][0]["uri"]+"\" class=\"uri\" target=\"_blank\">"+feature.properties[prop][0]["uri"].substring(feature.properties[prop][0]["uri"].lastIndexOf('/')+1)+"</a></li>"
+                        	        popup+="<a href=\""+feature.properties[prop][0]["uri"]+"\" class=\"uri\" target=\"_blank\">"
+                                    if("vallabel" in feature.properties[prop][0]){
+                                        popup+=feature.properties[prop][0]["vallabel"]+"</a></li>"
+                                    }else{
+                                        popup+=feature.properties[prop][0]["uri"].substring(feature.properties[prop][0]["uri"].lastIndexOf('/')+1)+"</a></li>"
+                                    }
                             }else if((typeof feature.properties[prop][0]["uri"] !== 'undefined') && feature.properties[prop][0]["uri"].startsWith("www.")){
-                                    popup+="<a href=\"http://"+feature.properties[prop][0]["uri"]+"\" class=\"uri\" target=\"_blank\">"+feature.properties[prop][0]["uri"]+"</a></li>"
+                                    popup+="<a href=\"http://"+feature.properties[prop][0]["uri"]+"\" class=\"uri\" target=\"_blank\">"
+                                    if("vallabel" in feature.properties[prop][0]){
+                                        popup+=feature.properties[prop][0]["vallabel"]+"</a></li>"
+                                    }else{
+                                        popup+=feature.properties[prop][0]["uri"]+"</a></li>"
+                                    }
                             }else if((typeof feature.properties[prop][0]["uri"] !== 'undefined') && feature.properties[prop][0]["uri"].includes("@")){
-                                    popup+="<a href=\"mailto:"+feature.properties[prop][0]["uri"]+"\" class=\"uri\" target=\"_blank\">"+feature.properties[prop][0]["uri"]+"</a></li>"
+                                    popup+="<a href=\"mailto:"+feature.properties[prop][0]["uri"]+"\" class=\"uri\" target=\"_blank\">"
+                                    if("vallabel" in feature.properties[prop][0]){
+                                        popup+=feature.properties[prop][0]["vallabel"]+"</a></li>"
+                                    }else{
+                                        popup+=feature.properties[prop][0]["uri"]+"</a></li>"
+                                    }
                             }else{
                         	        popup+=feature.properties[prop][0]["uri"]+"</li>"
                             }
@@ -122,11 +145,26 @@ var map = L.map('map',{fullscreenControl: true,fullscreenControlOptions: {positi
                             for(val in feature.properties[prop]){
                                 popup+="<li>"
                                 if((typeof feature.properties[prop][val]["uri"] !== 'undefined') && feature.properties[prop][val]["uri"].startsWith("http")){
-                        	        popup+="<a href=\""+feature.properties[prop][val]["uri"]+"\" class=\"uri\" target=\"_blank\">"+feature.properties[prop][val]["uri"].substring(feature.properties[prop][val]["uri"].lastIndexOf('/')+1)+"</a></li>"
+                        	        popup+="<a href=\""+feature.properties[prop][val]["uri"]+"\" class=\"uri\" target=\"_blank\">"
+                        	        if("vallabel" in feature.properties[prop][val]){
+                                        popup+=feature.properties[prop][val]["vallabel"]+"</a></li>"
+                                    }else{
+                                        popup+=feature.properties[prop][val]["uri"].substring(feature.properties[prop][val]["uri"].lastIndexOf('/')+1)+"</a></li>"
+                                    }
                                 }else if((typeof feature.properties[prop][val]["uri"] !== 'undefined') && feature.properties[prop][val]["uri"].startsWith("www.")){
-                                    popup+="<a href=\"http://"+feature.properties[prop][val]["uri"]+"\" class=\"uri\" target=\"_blank\">"+feature.properties[prop][val]["uri"]+"</a></li>"
+                                    popup+="<a href=\"http://"+feature.properties[prop][val]["uri"]+"\" class=\"uri\" target=\"_blank\">"
+                                    if("vallabel" in feature.properties[prop][val]){
+                                        popup+=feature.properties[prop][val]["vallabel"]+"</a></li>"
+                                    }else{
+                                        popup+=feature.properties[prop][val]["uri"]+"</a></li>"
+                                    }
                                 }else if((typeof feature.properties[prop][val]["uri"] !== 'undefined') && feature.properties[prop][val]["uri"].includes("@")){
-                                    popup+="<a href=\"mailto:"+feature.properties[prop][val]["uri"]+"\" class=\"uri\" target=\"_blank\">"+feature.properties[prop][val]["uri"]+"</a></li>"
+                                    popup+="<a href=\"mailto:"+feature.properties[prop][val]["uri"]+"\" class=\"uri\" target=\"_blank\">"
+                                    if("vallabel" in feature.properties[prop][val]){
+                                        popup+=feature.properties[prop][val]["vallabel"]+"</a></li>"
+                                    }else{
+                                        popup+=feature.properties[prop][val]["uri"]+"</a></li>"
+                                    }
                                 }else{
                         	        popup+=feature.properties[prop][val]["uri"]+"</li>"
                                 }

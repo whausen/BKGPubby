@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -51,17 +52,19 @@ public class Configuration extends ResourceReader {
 	private final VocabularyStore vocabularyStore = new VocabularyStore();
 	private final DataSource dataSource;
 	private final String indexIRI;
+	private final Set<String> mapURIs;
 	private final Set<String> allBrowsableNamespaces = new HashSet<String>();
 	
 	public Configuration(Resource configuration) {
 		super(configuration);
 		webBase = getRequiredIRI(CONF.webBase);
-
+		mapURIs=new TreeSet<String>();
 		// Create datasets from conf:dataset
 		for (Resource r: getResources(CONF.dataset)) {
 			Dataset ds = new Dataset(r, this);
 			datasets.add(ds);
 			allBrowsableNamespaces.addAll(ds.getBrowsableNamespaces());
+			mapURIs.add(ds.fullWebBase);
 		}
 		allBrowsableNamespaces.add(getWebApplicationBaseURI() + getWebResourcePrefix());
 		allBrowsableNamespaces.addAll(getBrowsableNamespaces());
@@ -179,6 +182,10 @@ public class Configuration extends ResourceReader {
 	 */
 	public List<Dataset> getDatasets() {
 		return datasets;
+	}
+	
+	public Set<String> getMapURIs() {
+		return mapURIs;
 	}
 	
 	/**

@@ -59,7 +59,11 @@ public class SearchServlet extends BaseServlet {
 		for(SearchRecord rec:res) {
 			JSONObject instance=new JSONObject();
 			instance.put("label",rec.getLabel());
-			instance.put("value",rec.getResource().getURI().replace(config.getWebResourcePrefix(),config.getWebApplicationBaseURI()));
+			String val=rec.getResource().getURI();
+			for(String uri:config.getMapURIs()) {
+				val=val.replace(uri,config.getWebApplicationBaseURI());
+			}
+			instance.put("value",val);
 			instance.put("id",rec.getResource().getURI());
 			result.put(instance);			
 		}

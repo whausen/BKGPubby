@@ -104,4 +104,6 @@
       <div class="page-resource-uri"><a href="$uri" target="_blank">$uri</a></div>
 #end
     </div>
+    <div class="search">
     Search: <input id="search" size="50">
+    </div>

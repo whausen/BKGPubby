@@ -21,7 +21,6 @@
 	    <link rel="stylesheet" type="text/css" href="${server_base}static/style.css" />
     <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <script type="text/javascript" src="${server_base}static/script.js"></script>
     <script type="text/javascript" src="${server_base}static/proj4.js"></script>
     <script type="text/javascript" src="${server_base}static/epsg.js"></script>
     <script type="text/javascript" src="${server_base}static/wicket.js"></script>
@@ -82,6 +81,7 @@
       });
   } );
   </script>
+      <script type="text/javascript" src="${server_base}static/script.js"></script>
   </head>
   <body onLoad="init();">
     <div id="header">

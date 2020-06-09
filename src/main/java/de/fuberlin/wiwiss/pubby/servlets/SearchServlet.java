@@ -61,6 +61,7 @@ public class SearchServlet extends BaseServlet {
 			instance.put("label",rec.getLabel());
 			String val=rec.getResource().getURI();
 			for(String uri:config.getMapURIs()) {
+				System.out.println(uri+" - "+config.getWebApplicationBaseURI());
 				val=val.replace(uri,config.getWebApplicationBaseURI());
 			}
 			instance.put("value",val);

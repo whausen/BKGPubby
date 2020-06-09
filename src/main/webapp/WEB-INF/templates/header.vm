@@ -38,6 +38,9 @@
       }
       .container > hr {
         margin: 40px 0;
+        .search {
+    	z-index: 9999999 !important;
+		}
      </style>
   <script>
   $( function() {

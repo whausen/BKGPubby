@@ -60,7 +60,7 @@
       .autocomplete({
         source: function( request, response ) {
           $.getJSON( "${server_base}search", {
-            search: extractLast( request.term )
+            search: extractLast( request.term ),
             limit: 10
           }, response );
         },

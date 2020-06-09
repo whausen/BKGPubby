@@ -38,7 +38,7 @@
       }
       .container > hr {
         margin: 40px 0;
-        .search {
+      .search {
     	z-index: 9999999 !important;
 		}
      </style>

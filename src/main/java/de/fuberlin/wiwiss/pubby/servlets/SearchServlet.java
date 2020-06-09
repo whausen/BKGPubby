@@ -12,6 +12,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import de.fuberlin.wiwiss.pubby.Configuration;
+import de.fuberlin.wiwiss.pubby.Dataset;
 import de.fuberlin.wiwiss.pubby.util.SearchRecord;
 
 public class SearchServlet extends BaseServlet {
@@ -60,9 +61,9 @@ public class SearchServlet extends BaseServlet {
 			JSONObject instance=new JSONObject();
 			instance.put("label",rec.getLabel());
 			String val=rec.getResource().getURI();
-			for(String uri:config.getMapURIs()) {
-				System.out.println(uri+" - "+config.getWebApplicationBaseURI());
-				val=val.replace(uri,config.getWebApplicationBaseURI());
+			for(Dataset ds:config.getDatasets()) {	
+				System.out.println(ds.fullWebBase+" - "+config.getWebApplicationBaseURI());
+				val=val.replace(ds.fullWebBase,config.getWebApplicationBaseURI());
 			}
 			instance.put("value",val);
 			instance.put("id",rec.getResource().getURI());

@@ -3,6 +3,7 @@ package de.fuberlin.wiwiss.pubby.sources;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -10,8 +11,11 @@ import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.vocabulary.OWL;
 
+import com.miguelfonseca.completely.AutocompleteEngine;
+
 import de.fuberlin.wiwiss.pubby.IRIRewriter;
 import de.fuberlin.wiwiss.pubby.ModelUtil;
+import de.fuberlin.wiwiss.pubby.util.SearchRecord;
 
 /**
  * Wraps a {@link DataSource} by applying a {@link IRIRewriter}. The result
@@ -141,5 +145,17 @@ public class RewrittenDataSource implements DataSource {
 		if (rewritten.equals(unrewritten)) return;
 		rewritten.addProperty(OWL.sameAs, unrewritten);
 		ModelUtil.addNSIfUndefined(model, "owl", OWL.NS);
+	}
+
+	@Override
+	public List<de.fuberlin.wiwiss.pubby.util.AutocompleteEngine<SearchRecord>> getLabelIndex() {
+		System.out.println("RewrittenDataSource: GetLabelIndex()");
+		return original.getLabelIndex();
+	}
+
+	@Override
+	public Model describeResource(String absoluteIRI, String language) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

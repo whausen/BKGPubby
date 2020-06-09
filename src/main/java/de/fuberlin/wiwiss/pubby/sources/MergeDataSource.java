@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -14,7 +16,10 @@ import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.shared.impl.PrefixMappingImpl;
 
+import com.miguelfonseca.completely.AutocompleteEngine;
+
 import de.fuberlin.wiwiss.pubby.ModelUtil;
+import de.fuberlin.wiwiss.pubby.util.SearchRecord;
 
 /**
  * A {@link DataSource} that presents an RDF merge of multiple other
@@ -47,6 +52,25 @@ public class MergeDataSource implements DataSource {
 	}
 	
 	@Override
+	public Model describeResource(String iri,String language) {
+		Model result = ModelFactory.createDefaultModel();
+		for (DataSource source: sources) {
+			if (!source.canDescribe(iri)) continue;
+			ModelUtil.mergeModels(result, source.describeResource(iri,language));
+		}
+		// Remove any other prefixes that may already be defined for the must-have namespaces
+		for (String prefix: mustHavePrefixes.getNsPrefixMap().keySet()) {
+			String ns = mustHavePrefixes.getNsPrefixURI(prefix);
+			while (result.getNsURIPrefix(ns) != null) {
+				result.removeNsPrefix(result.getNsURIPrefix(ns));
+			}
+		}
+		// Set all the must-have prefix/namespace pairs
+		ModelUtil.mergePrefixes(result, mustHavePrefixes);
+		return result;
+	}
+	
+	@Override
 	public Model describeResource(String iri) {
 		Model result = ModelFactory.createDefaultModel();
 		for (DataSource source: sources) {
@@ -64,7 +88,8 @@ public class MergeDataSource implements DataSource {
 		ModelUtil.mergePrefixes(result, mustHavePrefixes);
 		return result;
 	}
-
+	
+	
 	@Override
 	public Map<Property, Integer> getHighIndegreeProperties(String resourceIRI) {
 		Map<Property, Integer> result = new HashMap<Property, Integer>();
@@ -101,6 +126,7 @@ public class MergeDataSource implements DataSource {
 	public List<Resource> getIndex() {
 		List<Resource> result = new ArrayList<Resource>();
 		for (DataSource source: sources) {
+			System.out.println(source);
 			result.addAll(source.getIndex());
 		}
 		return result;
@@ -115,5 +141,19 @@ public class MergeDataSource implements DataSource {
 			map1.put(key, map1.containsKey(key) ? map1.get(key) + value : value);
 		}
 		return map1;
+	}
+
+	@Override
+	public List<de.fuberlin.wiwiss.pubby.util.AutocompleteEngine<SearchRecord>> getLabelIndex() {
+		System.out.println("MergeDataSource: GetLabelIndex()");
+		List<de.fuberlin.wiwiss.pubby.util.AutocompleteEngine<SearchRecord>> result = new LinkedList<>();
+		System.out.println("Sources: "+sources.size());
+		for (DataSource source: sources) {
+			System.out.println(source.toString());
+			System.out.println(source.getLabelIndex());
+			if(source.getLabelIndex()!=null)
+				result.addAll(source.getLabelIndex());
+		}
+		return result;
 	}
 }

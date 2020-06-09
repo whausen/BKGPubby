@@ -12,6 +12,10 @@ import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.rdf.model.StmtIterator;
 import org.apache.jena.vocabulary.RDFS;
 
+import com.miguelfonseca.completely.AutocompleteEngine;
+
+import de.fuberlin.wiwiss.pubby.util.SearchRecord;
+
 /**
  * A {@link DataSource} that wraps another data source and adds an
  * index of the resources in that data source.
@@ -44,6 +48,22 @@ public class IndexDataSource implements DataSource {
 		}
 		return result;
 	}
+
+	@Override
+	public Model describeResource(String iri,String language) {
+		if (!indexIRI.equals(iri)) return wrapped.describeResource(iri);
+		Model result = ModelFactory.createDefaultModel();
+		result.setNsPrefix("sioc", SIOC_NS);
+		result.setNsPrefix("rdfs", RDFS.getURI());
+		Resource index = result.createResource(indexIRI);
+		// TODO: Get label from the vocabulary store, and make it i18nable
+		index.addProperty(RDFS.label, "Index of Resources", language);
+		for (Resource r: wrapped.getIndex()) {
+			index.addProperty(siocContainerOf, r);
+		}
+		return result;
+	}
+	
 	private final static String SIOC_NS = "http://rdfs.org/sioc/ns#";
 	private final static Property siocContainerOf = 
 			ResourceFactory.createProperty(SIOC_NS + "container_of");
@@ -88,4 +108,12 @@ public class IndexDataSource implements DataSource {
 		// empty dataset into a non-empty one. 
 		return wrapped.getIndex();
 	}
+
+	@Override
+	public List<de.fuberlin.wiwiss.pubby.util.AutocompleteEngine<SearchRecord>> getLabelIndex() {
+		System.out.println("IndexDataSource: GetLabelIndex()");
+		return wrapped.getLabelIndex();
+	}
+	
+	
 }

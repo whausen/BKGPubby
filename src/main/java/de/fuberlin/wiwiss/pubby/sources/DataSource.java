@@ -7,6 +7,10 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
 
+import com.miguelfonseca.completely.AutocompleteEngine;
+
+import de.fuberlin.wiwiss.pubby.util.SearchRecord;
+
 /**
  * A source of RDF data intended for publication through
  * the server.
@@ -15,6 +19,7 @@ import org.apache.jena.rdf.model.Resource;
  */
 public interface DataSource {
 	static final int MAX_INDEX_SIZE = 1000000;
+	
 	
 	/**
 	 * Indicates whether this data source may have some information about
@@ -44,6 +49,18 @@ public interface DataSource {
 	 */
 	Model describeResource(String absoluteIRI);
 
+	/**
+	 * Returns a subgraph of the data source describing one resource.
+	 * This should include both incoming and outgoing triples. However,
+	 * it should exclude outgoing arcs where the property is a
+	 * high-outdegree property, and it should exclude incoming arcs where
+	 * the property is a high-indegree property. If labels for other
+	 * resources are included in the result, then they will be used.
+	 * @param absoluteIRI The IRI of the resource to be described
+	 * @return A subgraph of the data source describing the resource.
+	 */
+	Model describeResource(String absoluteIRI,String language);
+	
 	/**
 	 * If {@link #describeResource(String)} omits properties of
 	 * high indegree, then those properties must be returned here with
@@ -87,4 +104,7 @@ public interface DataSource {
 	 * to the number of resources returned.
 	 */
 	List<Resource> getIndex();
+	
+	List<de.fuberlin.wiwiss.pubby.util.AutocompleteEngine<SearchRecord>> getLabelIndex();
+	
 }

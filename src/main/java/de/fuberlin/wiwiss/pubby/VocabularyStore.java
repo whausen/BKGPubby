@@ -59,13 +59,26 @@ public class VocabularyStore {
 	}
 
 	public Literal getLabel(String iri, boolean preferPlural, String language) {
-		System.out.println(labels.toString());
 		System.out.println("Getting property label: "+iri);
 		if (preferPlural) {
 			Literal pluralLabel = pluralLabels.get(iri, language);
 			System.out.println("Getting property label plural: "+pluralLabel);
 			return pluralLabel == null ? getLabel(iri, false, language) : pluralLabel;
 		}
+		Literal lit=labels.get(iri, language);
+		if(lit==null) {
+			
+		}
+		/*if (label == null) {
+			StmtIterator iter=predicate.listProperties(RDFS.label);
+			if(iter.hasNext()) {
+				String labelprop=iter.next().getObject().asLiteral().getString();
+				System.out.println("Got Label for Prop: "+labelprop);
+				return labelprop;
+			}else {
+				return null;
+			}
+		}	*/	
 		System.out.println("Getting property label normal: "+labels.get(iri, language));
 		return labels.get(iri, language);
 	}

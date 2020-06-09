@@ -1,6 +1,7 @@
 package de.fuberlin.wiwiss.pubby;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -17,6 +18,8 @@ import de.fuberlin.wiwiss.pubby.sources.FilteredDataSource;
 import de.fuberlin.wiwiss.pubby.sources.ModelDataSource;
 import de.fuberlin.wiwiss.pubby.sources.RemoteSPARQLDataSource;
 import de.fuberlin.wiwiss.pubby.sources.RewrittenDataSource;
+import de.fuberlin.wiwiss.pubby.util.AutocompleteEngine;
+import de.fuberlin.wiwiss.pubby.util.SearchRecord;
 import de.fuberlin.wiwiss.pubby.vocab.CONF;
 
 /**
@@ -131,10 +134,17 @@ public class Dataset extends ResourceReader {
 		// If conf:datasetURIPattern is set, then filter the dataset accordingly.
 		if (hasProperty(CONF.datasetURIPattern)) {
 			final Pattern pattern = Pattern.compile(getString(CONF.datasetURIPattern));
-			result = new FilteredDataSource(result) {
+			final DataSource fresult=result;
+			result = new FilteredDataSource(fresult) {
 				@Override
 				public boolean canDescribe(String absoluteIRI) {
 					return pattern.matcher(absoluteIRI).find();
+				}
+
+				@Override
+				public Model describeResource(String absoluteIRI, String language) {
+					// TODO Auto-generated method stub
+					return null;
 				}
 			};
 		}
@@ -170,13 +180,20 @@ public class Dataset extends ResourceReader {
 		// Filter the dataset to keep only those resources in the datasetBase
 		// and in browsable namespaces, unless it's an annotation provider
 		if (!hasType(CONF.AnnotationProvider)) {
-			result = new FilteredDataSource(result) {
+			final DataSource fresult=result;
+			result = new FilteredDataSource(fresult) {
 				@Override
 				public boolean canDescribe(String absoluteIRI) {
 					for (String namespace: browsableNamespaces) {
 						if (absoluteIRI.startsWith(namespace)) return true;
 					}
 					return false;
+				}
+
+				@Override
+				public Model describeResource(String absoluteIRI, String language) {
+					// TODO Auto-generated method stub
+					return null;
 				}
 			};
 		}

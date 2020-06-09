@@ -598,13 +598,13 @@ public class ResourceDescription {
 				} else if (node.isURIResource()) {
 					// If it's not a class, see if we happen to have a label cached
 					result = vocabularyStore.getCachedLabel(node.asResource().getURI(), false);
-					System.out.println("HasCachedLabel? "+result.toString());
+					//System.out.println("HasCachedLabel? "+result.toString());
 				}
 			}
 			if (result == null) {
 				// Use any label that may be included in the description model
 				result = new ResourceDescription(node.asResource(), model, config).getLabel();
-				System.out.println("Resource has label? "+result.toString());
+				//System.out.println("Resource has label? "+result.toString());
 			}
 			if (result == null) return null;
 			return toTitleCase(result.getLexicalForm(), result.getLanguage());

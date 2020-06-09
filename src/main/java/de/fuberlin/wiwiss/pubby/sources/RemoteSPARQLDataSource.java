@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -27,11 +28,18 @@ import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
+import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.sparql.engine.http.HttpQuery;
 import org.apache.jena.sparql.engine.http.QueryEngineHTTP;
 
+import com.miguelfonseca.completely.text.analyze.tokenize.WordTokenizer;
+import com.miguelfonseca.completely.text.analyze.transform.LowerCaseTransformer;
+
 import de.fuberlin.wiwiss.pubby.ConfigurationException;
 import de.fuberlin.wiwiss.pubby.VocabularyStore.CachedPropertyCollection;
+import de.fuberlin.wiwiss.pubby.util.AutocompleteEngine;
+import de.fuberlin.wiwiss.pubby.util.SearchAdapter;
+import de.fuberlin.wiwiss.pubby.util.SearchRecord;
 
 /**
  * A data source backed by a SPARQL endpoint accessed through
@@ -41,6 +49,8 @@ public class RemoteSPARQLDataSource implements DataSource {
 	private final String endpointURL;
 	private final String defaultGraphURI;
 	private final boolean supportsSPARQL11;
+	
+	QueryEngineHTTP endpoint;
 
 	private final Set<String> resourceQueries;
 	private final Set<String> propertyQueries;
@@ -51,12 +61,11 @@ public class RemoteSPARQLDataSource implements DataSource {
 	private final CachedPropertyCollection highIndegreeProperties;
 	private final CachedPropertyCollection highOutdegreeProperties;
 	
-	QueryEngineHTTP endpoint;
-	
 	private String previousDescribeQuery;
 	private String contentType = null;
 	private final Set<String[]> queryParamsSelect = new HashSet<String[]>();
 	private final Set<String[]> queryParamsGraph = new HashSet<String[]>();
+	private AutocompleteEngine<SearchRecord> engine;
 	
 	public RemoteSPARQLDataSource(String endpointURL, String defaultGraphURI) {
 		this(endpointURL, defaultGraphURI, false, null, null, null, null, null, null, null);
@@ -80,10 +89,8 @@ public class RemoteSPARQLDataSource implements DataSource {
 				Collections.singleton("DESCRIBE ?__this__");
 		}
 		if (propertyQueries == null || propertyQueries.isEmpty()) {
-			propertyQueries = new HashSet<String>(Arrays.asList(new String[]{
-					"CONSTRUCT {?__this__ ?__property__ ?x} WHERE {?__this__ ?__property__ ?x. FILTER (!isBlank(?x))}",
-					"CONSTRUCT {?__property__ <http://www.w3.org/2000/01/rdf-schema#label> ?label } WHERE {?__this__ ?__property__ ?x. ?__property__ <http://www.w3.org/2000/01/rdf-schema#label> ?label . FILTER (!isBlank(?x))}"
-				}));
+			propertyQueries = Collections.singleton(
+					"CONSTRUCT {?__this__ ?__property__ ?x} WHERE {?__this__ ?__property__ ?x. FILTER (!isBlank(?x))}");
 		}
 		if (inversePropertyQueries == null || inversePropertyQueries.isEmpty()) {
 			inversePropertyQueries = Collections.singleton(
@@ -212,6 +219,7 @@ public class RemoteSPARQLDataSource implements DataSource {
 	
 	@Override
 	public List<Resource> getIndex() {
+		System.out.println("Index SPARQL Query");
 		List<Resource> result = new ArrayList<Resource>();
 		ResultSet rs = execQuerySelect(
 				"SELECT DISTINCT ?s { " +
@@ -220,7 +228,7 @@ public class RemoteSPARQLDataSource implements DataSource {
 				"} LIMIT " + DataSource.MAX_INDEX_SIZE);
 		while (rs.hasNext()) {
 			Resource s=rs.next().getResource("s");
-			System.out.println("1. "+s.toString());
+			//System.out.println("1. "+s.toString());
 			result.add(s);
 		}
 		System.out.println("Attempting second query");
@@ -232,12 +240,38 @@ public class RemoteSPARQLDataSource implements DataSource {
 					"} LIMIT " + (DataSource.MAX_INDEX_SIZE - result.size()));
 			while (rs.hasNext()) {
 				Resource s=rs.next().getResource("o");
-				System.out.println("2. "+s.toString());
+				//System.out.println("2. "+s.toString());
 				result.add(s);
 			}
 		}
 		System.out.println(result.size()+" - "+result.isEmpty());
 		return result;
+	}
+	
+	@Override
+	public List<AutocompleteEngine<SearchRecord>> getLabelIndex(){
+		System.out.println("SPARQL Datasource: Get Label Index!!!!");
+		if(engine==null) {
+			engine= new AutocompleteEngine.Builder<SearchRecord>()
+		            .setIndex(new SearchAdapter())
+		            .setAnalyzers(new LowerCaseTransformer(), new WordTokenizer())
+		            .build();
+			System.out.println("Building Label Index....");
+			ResultSet rs = execQuerySelect(
+					"SELECT DISTINCT ?s ?label WHERE { " +
+					"?s <http://www.w3.org/2000/01/rdf-schema#label> ?label . " +
+					"FILTER (isURI(?s)) " +
+					"} LIMIT " + DataSource.MAX_INDEX_SIZE*2);
+			Integer i=0;
+			while (rs.hasNext()) {
+				i++;
+				QuerySolution st=rs.next();
+				System.out.println(st.getLiteral("label").getString());
+	            engine.add(new SearchRecord(st.getLiteral("label").getString(),st.getResource("s")));
+			}
+			System.out.println("Got "+i+" labels!");
+		}
+		return Collections.singletonList(engine);
 	}
 
 	public String getPreviousDescribeQuery() {
@@ -367,5 +401,11 @@ public class RemoteSPARQLDataSource implements DataSource {
 		}
 		result.append(')');
 		return result.toString();
+	}
+
+	@Override
+	public Model describeResource(String absoluteIRI, String language) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

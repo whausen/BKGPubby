@@ -313,6 +313,7 @@ public class ResourceDescription {
 			PropertyBuilder propertyBuilder = (PropertyBuilder) it2.next();
 			results.add(propertyBuilder.toProperty());
 		}
+		System.out.println("Build properties finished!");
 		Collections.sort(results);
 		return results;
 	}
@@ -526,14 +527,6 @@ public class ResourceDescription {
 		PropertyBuilder(Property predicate, boolean isInverse, VocabularyStore vocabularyStore) {
 			this.predicate = predicate;
 			this.isInverse = isInverse;
-			/*StmtIterator iterator = predicate.listProperties(RDFS.label);
-			this.labels=new LinkedList<LiteralLabel>();
-			System.out.println(predicate.getURI()+" has Labels? - "+iterator.hasNext());
-			while(iterator.hasNext()) {
-				LiteralLabel lit=iterator.next().asTriple().getObject().getLiteral();
-				System.out.println(predicate.getURI()+" - "+lit.toString());
-				this.labels.add(lit);
-			}*/
 			this.vocabularyStore = vocabularyStore;
 		}
 		
@@ -630,9 +623,18 @@ public class ResourceDescription {
 				return "?:" + datatypePrefixer.getLocalName();
 			}
 		}
+		
+		public String getDatatypeURI() {
+			if (!node.isLiteral()) return null;
+			String uri = ((Literal) node.as(Literal.class)).getDatatypeURI();
+			if (uri == null) return null;
+			return uri;
+		}
+		
 		public boolean isType() {
 			return predicate.equals(RDF.type);
 		}
+		
 		public int compareTo(Value other) {
 			if (!(other instanceof Value)) {
 				return 0;

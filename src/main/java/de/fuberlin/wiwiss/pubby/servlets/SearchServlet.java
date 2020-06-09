@@ -62,8 +62,8 @@ public class SearchServlet extends BaseServlet {
 			instance.put("label",rec.getLabel());
 			String val=rec.getResource().getURI();
 			for(Dataset ds:config.getDatasets()) {	
-				System.out.println(ds.fullWebBase+" - "+config.getWebApplicationBaseURI());
-				val=val.replace(ds.fullWebBase,config.getWebApplicationBaseURI());
+				System.out.println(ds.datasetBase+" - "+config.getWebApplicationBaseURI());
+				val=val.replace(ds.datasetBase,config.getWebApplicationBaseURI());
 			}
 			instance.put("value",val);
 			instance.put("id",rec.getResource().getURI());

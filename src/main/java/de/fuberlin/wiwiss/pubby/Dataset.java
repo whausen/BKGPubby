@@ -29,7 +29,7 @@ public class Dataset extends ResourceReader {
 	private final DataSource dataSource;
 	private final MetadataConfiguration metadata;
 	
-	public String fullWebBase;
+	public String datasetBase;
 	
 	// TODO: This is a rather dirty hack. We may need DataSource.getProvenance() or something
 	private RemoteSPARQLDataSource sparqlDataSource = null;
@@ -156,9 +156,9 @@ public class Dataset extends ResourceReader {
 		// If conf:datasetBase is set (and different from conf:webBase),
 		// rewrite the IRIs accordingly
 		// Base IRI for IRIs considered to be "in" the data source
-		fullWebBase = configuration.getWebApplicationBaseURI() + 
+		String fullWebBase = configuration.getWebApplicationBaseURI() + 
 				configuration.getWebResourcePrefix();
-		String datasetBase = getIRI(CONF.datasetBase, 
+		datasetBase = getIRI(CONF.datasetBase, 
 				fullWebBase);
 		if (!datasetBase.equals(fullWebBase)) {
 			rewriter = IRIRewriter.createNamespaceBased(datasetBase, fullWebBase);

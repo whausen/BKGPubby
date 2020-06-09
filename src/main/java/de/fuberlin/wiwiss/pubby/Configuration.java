@@ -64,7 +64,7 @@ public class Configuration extends ResourceReader {
 			Dataset ds = new Dataset(r, this);
 			datasets.add(ds);
 			allBrowsableNamespaces.addAll(ds.getBrowsableNamespaces());
-			mapURIs.add(ds.fullWebBase);
+			mapURIs.add(ds.datasetBase);
 		}
 		allBrowsableNamespaces.add(getWebApplicationBaseURI() + getWebResourcePrefix());
 		allBrowsableNamespaces.addAll(getBrowsableNamespaces());

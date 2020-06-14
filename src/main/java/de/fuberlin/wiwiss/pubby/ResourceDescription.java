@@ -19,7 +19,7 @@ import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTReader;
-
+import org.wololo.jts2geojson.GeoJSONReader;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.impl.LiteralLabel;
 import org.apache.jena.rdf.model.Literal;
@@ -96,6 +96,14 @@ public class ResourceDescription {
 				}
 	    }
 	 
+	 private void addGeometryGeoJSON(final Literal literall) {
+	 		String literal=literall.getString();
+	 		System.out.println("GeometryGeoJSON: "+literal);
+	 		GeoJSONReader reader=new GeoJSONReader(); 		
+	 		Geometry geom=reader.read(literal);
+	 		geoms.add(geom);
+	 }
+	 
 	 private void addGeometry(final Resource r) {
 	        StmtIterator it= resource.listProperties(GEO.ASWKT);
 	        while(it.hasNext()) {
@@ -110,6 +118,14 @@ public class ResourceDescription {
 	            Statement s = it.nextStatement();
 	            if ( !s.getObject().isAnon() ) {
 	                addGeometry2(s.getObject().asLiteral());
+	            }
+	        }
+	        it.close();
+	        it= resource.listProperties(GEO.ASGEOJSON);
+	        while(it.hasNext()) {
+	            Statement s = it.nextStatement();
+	            if ( !s.getObject().isAnon() ) {
+	                addGeometryGeoJSON(s.getObject().asLiteral());
 	            }
 	        }
 	        it.close();

@@ -114,4 +114,48 @@
 #        meta:endpointOperator <URI of the service provider who operates the SPARQL endpoint>;
 #        meta:endpointDataset <URI of the linked dataset that is exposed via the SPARQL endpoint>;
     ];
+        conf:dataset [
+        # SPARQL endpoint URL of the dataset
+        conf:sparqlEndpoint <https://ld.gdi-de.org/graphdb/repositories/gn_inspire>;
+        # Default graph name to query (not necessary for most endpoints)
+        # conf:sparqlDefaultGraph <http://dbpedia.org>;
+        # Common URI prefix of all resource URIs in the SPARQL dataset
+        conf:datasetBase <http://de-gdi.org/geodata#>;
+        # Fixes an issue with the server running behind an Apache proxy;
+        # can be disabled otherwise
+        conf:fixUnescapedCharacters "(),'!$&*+;=@";
+        # DBpedia uses URIs, not IRIs
+        conf:supportsIRIs false;
+
+        # Queries for describing a resource denoted by "?__this__".
+        # Multiple queries can be specified, results will be merged.
+        conf:resourceDescriptionQuery "CONSTRUCT { ?__this__ ?p ?o . ?p <http://www.w3.org/2000/01/rdf-schema#label> ?label . ?o <http://www.w3.org/2000/01/rdf-schema#label> ?olabel .} WHERE { ?__this__ ?p ?o . OPTIONAL {?p  <http://www.w3.org/2000/01/rdf-schema#label> ?label . } OPTIONAL {?o  <http://www.w3.org/2000/01/rdf-schema#label> ?olabel . } }";
+        conf:resourceDescriptionQuery "CONSTRUCT { ?s ?p ?__this__ } WHERE { ?s ?p ?__this__ }";
+        conf:resourceDescriptionQuery "CONSTRUCT { ?__this__ ?p ?o . ?p  <http://www.w3.org/2000/01/rdf-schema#label> ?label . } WHERE { VALUES ?p { <http://www.opengis.net/ont/geosparql#asWKT> <http://www.opengis.net/ont/geosparql#epsg> <http://www.opengis.net/ont/geosparql#asGML> } . ?__this__ <http://www.opengis.net/ont/geosparql#hasGeometry> ?geo . ?geo ?p ?o . OPTIONAL {?p  <http://www.w3.org/2000/01/rdf-schema#label> ?label . } }";
+        # conf:resourceDescriptionQuery "CONSTRUCT { ?__this__ ?p ?o . ?p <http://www.w3.org/2000/01/rdf-schema#label> ?label . } WHERE { ?__this__ ?p ?obj . ?p  <http://www.w3.org/2000/01/rdf-schema#label> ?label . }";
+        
+        # Queries for describing the blank nodes related to a given resource via a given property.
+        # The resource and the property should be denoted by "?__this__" and "?__property__".
+        # Multiple queries can be specified, results will be merged.
+#        conf:anonymousPropertyDescriptionQuery "DESCRIBE ?x WHERE { ?__this__ ?__property__ ?x. FILTER (isBlank(?x)) }";
+        
+        # Queries for describing the blank nodes inversely related to a given resource via a given property.
+        # The resource and the property should be denoted by "?__this__" and "?__property__".
+        # Multiple queries can be specified, results will be merged.
+#        conf:anonymousInversePropertyDescriptionQuery "DESCRIBE ?x WHERE { ?x ?__property__ ?__this__. FILTER (isBlank(?x)) }";
+        
+        # include metadata
+        # conf:metadataTemplate <metadata.ttl>;
+
+        # configure your metadata here
+        # Use properties with the meta: prefix where the property name
+        # corresponds to the placeholder URIs in metadata.ttl that begin
+        # with about:metadata:metadata:
+        # Examples for such properties are:
+#        meta:pubbyUser <URI of the data publisher who uses this Pubby>;
+#        meta:pubbyOperator <URI of the service provider who operates this Pubby>;
+#        meta:endpointUser <URI of the data publisher who uses the SPARQL endpoint queried by this Pubby>;
+#        meta:endpointOperator <URI of the service provider who operates the SPARQL endpoint>;
+#        meta:endpointDataset <URI of the linked dataset that is exposed via the SPARQL endpoint>;
+    ];
     .

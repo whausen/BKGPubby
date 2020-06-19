@@ -27,6 +27,7 @@
 @prefix wd: <http://www.wikidata.org/entity/> .
 @prefix ld-gdi: <http://ld.gdi-de.org/> .
 @prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix aaa6: <http://www.adv-online.de/namespaces/adv/gid/6.0#> .
 @prefix geosparql: <http://www.opengis.net/ont/geosparql#> .
 @prefix sesame: <http://www.openrdf.org/schema/sesame#> .
 @prefix inspire: <http://inspire.ec.europa.eu/> .

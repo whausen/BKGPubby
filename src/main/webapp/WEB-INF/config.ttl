@@ -120,7 +120,7 @@
         # Default graph name to query (not necessary for most endpoints)
         # conf:sparqlDefaultGraph <http://dbpedia.org>;
         # Common URI prefix of all resource URIs in the SPARQL dataset
-        conf:datasetBase <http://de-gdi.org/geodata#>;
+        conf:datasetBase <http://ld.gdi-de.org/id/de.bund.bkg.poi/>;
         # Fixes an issue with the server running behind an Apache proxy;
         # can be disabled otherwise
         conf:fixUnescapedCharacters "(),'!$&*+;=@";

@@ -109,5 +109,5 @@
 #end
     </div>
     <div class="search">
-    Search: <input id="search" size="50">
+    Search: <input id="search" size="50"><br/>
     </div>

@@ -7,8 +7,6 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
 
-import com.miguelfonseca.completely.AutocompleteEngine;
-
 import de.fuberlin.wiwiss.pubby.util.SearchRecord;
 
 /**
@@ -105,6 +103,6 @@ public interface DataSource {
 	 */
 	List<Resource> getIndex();
 	
-	List<de.fuberlin.wiwiss.pubby.util.AutocompleteEngine<SearchRecord>> getLabelIndex();
+	de.fuberlin.wiwiss.pubby.util.AutocompleteEngine<SearchRecord> getLabelIndex();
 	
 }

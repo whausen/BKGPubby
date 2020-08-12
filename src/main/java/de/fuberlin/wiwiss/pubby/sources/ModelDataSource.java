@@ -5,8 +5,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.jena.query.QuerySolution;
-import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.NodeIterator;
@@ -24,6 +22,7 @@ import com.miguelfonseca.completely.text.analyze.transform.LowerCaseTransformer;
 import de.fuberlin.wiwiss.pubby.ModelUtil;
 import de.fuberlin.wiwiss.pubby.util.AutocompleteEngine;
 import de.fuberlin.wiwiss.pubby.util.SearchAdapter;
+import de.fuberlin.wiwiss.pubby.util.SearchIndexInstance;
 import de.fuberlin.wiwiss.pubby.util.SearchRecord;
 
 /**
@@ -87,16 +86,14 @@ public class ModelDataSource implements DataSource {
 	}
 
 	@Override
-	public List<de.fuberlin.wiwiss.pubby.util.AutocompleteEngine<SearchRecord>> getLabelIndex() {
+	public de.fuberlin.wiwiss.pubby.util.AutocompleteEngine<SearchRecord> getLabelIndex() {
 		System.out.println("ModelDataSource: Get Label Index!!!!");
 		if(engine==null) {
-			engine= new AutocompleteEngine.Builder<SearchRecord>()
-		            .setIndex(new SearchAdapter())
-		            .setAnalyzers(new LowerCaseTransformer(), new WordTokenizer())
-		            .build();
+			engine=SearchIndexInstance.getInstance();
 			System.out.println("Building Label Index....");
 			List<Resource> result = new ArrayList<Resource>();
 			ResIterator subjects = model.listSubjects();
+			int i=0;
 			while (subjects.hasNext() && result.size() < DataSource.MAX_INDEX_SIZE) {
 				Resource r = subjects.next();
 				if (r.isAnon()) continue;
@@ -106,9 +103,11 @@ public class ModelDataSource implements DataSource {
 					String label=lit.getString();
 					engine.add(new SearchRecord(label,r));
 				}
+				i++;
 			}
+			System.out.println("Added "+i+" Labels to Index");
 		}
-		return Collections.singletonList(engine);
+		return engine;
 	}
 
 	@Override

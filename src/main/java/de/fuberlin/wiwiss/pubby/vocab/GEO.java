@@ -26,9 +26,9 @@ public class GEO {
 	public static final Property LOCATION = model.createProperty( WGS84GEONS + "location" );
 	
 	public static final Property HASGEOMETRY = model.createProperty( GEOSPARQLNS + "hasGeometry" );
-	
+		
 	public static final Property ASWKT = model.createProperty( GEOSPARQLNS + "asWKT" );
-	
+
 	public static final Property ASGEOJSON = model.createProperty( GEOSPARQLNS + "asGeoJSON" );
 	
 	public static final Property ASGML = model.createProperty( GEOSPARQLNS + "asGML" );

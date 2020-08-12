@@ -10,7 +10,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -28,7 +27,6 @@ import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
-import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.sparql.engine.http.HttpQuery;
 import org.apache.jena.sparql.engine.http.QueryEngineHTTP;
 
@@ -39,6 +37,7 @@ import de.fuberlin.wiwiss.pubby.ConfigurationException;
 import de.fuberlin.wiwiss.pubby.VocabularyStore.CachedPropertyCollection;
 import de.fuberlin.wiwiss.pubby.util.AutocompleteEngine;
 import de.fuberlin.wiwiss.pubby.util.SearchAdapter;
+import de.fuberlin.wiwiss.pubby.util.SearchIndexInstance;
 import de.fuberlin.wiwiss.pubby.util.SearchRecord;
 
 /**
@@ -249,29 +248,26 @@ public class RemoteSPARQLDataSource implements DataSource {
 	}
 	
 	@Override
-	public List<AutocompleteEngine<SearchRecord>> getLabelIndex(){
+	public AutocompleteEngine<SearchRecord> getLabelIndex(){
 		System.out.println("SPARQL Datasource: Get Label Index!!!!");
 		if(engine==null) {
-			engine= new AutocompleteEngine.Builder<SearchRecord>()
-		            .setIndex(new SearchAdapter())
-		            .setAnalyzers(new LowerCaseTransformer(), new WordTokenizer())
-		            .build();
+			engine=SearchIndexInstance.getInstance();
 			System.out.println("Building Label Index....");
 			ResultSet rs = execQuerySelect(
 					"SELECT DISTINCT ?s ?label WHERE { " +
 					"?s <http://www.w3.org/2000/01/rdf-schema#label> ?label . " +
 					"FILTER (isURI(?s)) " +
-					"} LIMIT " + DataSource.MAX_INDEX_SIZE*2);
+					"} LIMIT " + DataSource.MAX_INDEX_SIZE*6);
 			Integer i=0;
 			while (rs.hasNext()) {
 				i++;
 				QuerySolution st=rs.next();
 				System.out.println(st.getLiteral("label").getString());
-	            engine.add(new SearchRecord(st.getLiteral("label").getString(),st.getResource("s")));
+				engine.add(new SearchRecord(st.getLiteral("label").getString(),st.getResource("s")));
 			}
 			System.out.println("Got "+i+" labels!");
 		}
-		return Collections.singletonList(engine);
+		return engine;
 	}
 
 	public String getPreviousDescribeQuery() {

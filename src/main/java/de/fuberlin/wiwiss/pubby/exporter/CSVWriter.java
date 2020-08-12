@@ -15,15 +15,15 @@ import org.json.JSONObject;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.io.ParseException;
 import org.wololo.geojson.GeoJSON;
+import org.wololo.jts2geojson.GeoJSONReader;
 import org.wololo.jts2geojson.GeoJSONWriter;
 
 import de.fuberlin.wiwiss.pubby.vocab.GEO;
 
 /**
- * Writes a GeoPubby instance as JSON or GeoJSON if a geometry is present.
+ * Writes a GeoPubby instance as CSV.
  */
-public class GeoJSONWriterr extends ModelWriter {
-
+public class CSVWriter extends ModelWriter {
 	
 	@Override
 	public ExtendedIterator<Resource> write(Model model, HttpServletResponse response) throws IOException {
@@ -113,8 +113,32 @@ public class GeoJSONWriterr extends ModelWriter {
 				}
 			}
 		}	
+		StringBuilder csvresult=new StringBuilder();
+		StringBuilder csvresultheader=new StringBuilder();
+		csvresultheader.append("the_geom,");
+		GeoJSONReader reader=new GeoJSONReader();
+		for(int i=0;i<geojson.getJSONArray("features").length();i++) {
+			Geometry geom=reader.read(geojson.getJSONArray("features").getJSONObject(i).getJSONObject("geometry").toString());
+			csvresult.append(geom.toText()+",");
+			JSONObject props=geojson.getJSONArray("features").getJSONObject(i).getJSONObject("properties");
+			for(String key:props.keySet()) {
+				if(i==0) {
+					csvresultheader.append(key+",");
+				}
+				if(props.get(key).toString().contains("^^")) {
+					csvresult.append(props.get(key).toString().substring(props.get(key).toString().lastIndexOf("^^")+2)+",");
+				}else {
+					csvresult.append(props.get(key)+",");
+				}	
+			}
+			if((i+1)<geojson.getJSONArray("features").length())
+				csvresult.append(System.lineSeparator());
+			
+		}
+		csvresultheader.delete(csvresultheader.length()-1, csvresultheader.length());
+		csvresult.delete(csvresult.length()-1, csvresult.length());
 		try {
-			response.getWriter().write(geojson.toString(2));
+			response.getWriter().write(csvresultheader.toString()+System.lineSeparator()+csvresult.toString());
 			response.getWriter().close();
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
@@ -124,6 +148,7 @@ public class GeoJSONWriterr extends ModelWriter {
 			e.printStackTrace();
 		}
 		return null;
+		
 	}
-	
+
 }

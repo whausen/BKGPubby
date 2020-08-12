@@ -12,8 +12,6 @@ import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.rdf.model.StmtIterator;
 import org.apache.jena.vocabulary.RDFS;
 
-import com.miguelfonseca.completely.AutocompleteEngine;
-
 import de.fuberlin.wiwiss.pubby.util.SearchRecord;
 
 /**
@@ -110,7 +108,7 @@ public class IndexDataSource implements DataSource {
 	}
 
 	@Override
-	public List<de.fuberlin.wiwiss.pubby.util.AutocompleteEngine<SearchRecord>> getLabelIndex() {
+	public de.fuberlin.wiwiss.pubby.util.AutocompleteEngine<SearchRecord> getLabelIndex() {
 		System.out.println("IndexDataSource: GetLabelIndex()");
 		return wrapped.getLabelIndex();
 	}

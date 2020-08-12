@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -16,9 +15,8 @@ import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.shared.PrefixMapping;
 import org.apache.jena.shared.impl.PrefixMappingImpl;
 
-import com.miguelfonseca.completely.AutocompleteEngine;
-
 import de.fuberlin.wiwiss.pubby.ModelUtil;
+import de.fuberlin.wiwiss.pubby.util.SearchIndexInstance;
 import de.fuberlin.wiwiss.pubby.util.SearchRecord;
 
 /**
@@ -144,16 +142,11 @@ public class MergeDataSource implements DataSource {
 	}
 
 	@Override
-	public List<de.fuberlin.wiwiss.pubby.util.AutocompleteEngine<SearchRecord>> getLabelIndex() {
+	public de.fuberlin.wiwiss.pubby.util.AutocompleteEngine<SearchRecord> getLabelIndex() {
 		System.out.println("MergeDataSource: GetLabelIndex()");
-		List<de.fuberlin.wiwiss.pubby.util.AutocompleteEngine<SearchRecord>> result = new LinkedList<>();
-		System.out.println("Sources: "+sources.size());
-		for (DataSource source: sources) {
-			System.out.println(source.toString());
-			System.out.println(source.getLabelIndex());
-			if(source.getLabelIndex()!=null)
-				result.addAll(source.getLabelIndex());
+		for(DataSource ds:sources) {
+			ds.getLabelIndex();
 		}
-		return result;
+		return SearchIndexInstance.getInstance();
 	}
 }

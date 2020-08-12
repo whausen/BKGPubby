@@ -23,9 +23,9 @@ import com.sun.xml.txw2.output.IndentingXMLStreamWriter;
 import de.fuberlin.wiwiss.pubby.vocab.GEO;
 
 /**
- * Writes a GeoPubby instance as GML.
+ * Writes a GeoPubby instance as GPX.
  */
-public class GMLWriter extends ModelWriter {
+public class GPXWriter extends ModelWriter {
 
 	@Override
 	public ExtendedIterator<Resource> write(Model model, HttpServletResponse response) throws IOException {
@@ -39,8 +39,10 @@ public class GMLWriter extends ModelWriter {
 			try {
 				XMLStreamWriter writer = new IndentingXMLStreamWriter(factory.createXMLStreamWriter(strwriter));
 				writer.writeStartDocument();
-				writer.setPrefix("gml", "http://www.opengis.net/gml");
-				writer.writeStartElement("http://www.opengis.net/gml", "Feature");
+				writer.setPrefix("gml","http://www.opengis.net/gml");
+				writer.setPrefix("gpx","http://www.topografix.com/GPX/1/1");
+				writer.writeStartElement("http://www.topografix.com/GPX/1/1", "gpx");
+				writer.writeDefaultNamespace("http://www.topografix.com/GPX/1/1");
 				writer.writeNamespace("gml", "http://www.opengis.net/gml");
 				Map<String, String> ns = new TreeMap<String, String>();
 				while (it.hasNext()) {
@@ -114,10 +116,11 @@ public class GMLWriter extends ModelWriter {
 							}
 						}
 						if (lon != null && lat != null) {
-							writer.writeStartElement("http://www.opengis.net/gml", "Point");
-							writer.writeStartElement("http://www.opengis.net/gml", "posList");
-							writer.writeCharacters(lat + " " + lon);
-							writer.writeEndElement();
+							writer.writeStartElement("wpt");
+							writer.writeAttribute("lat", lat + "");
+							writer.writeAttribute("lon", lon + "");
+							// collectColumns(writer,
+							// geojson.getJSONArray("features").getJSONObject(i).getJSONObject("properties"),"");
 							writer.writeEndElement();
 							lat = null;
 							lon = null;
@@ -137,4 +140,5 @@ public class GMLWriter extends ModelWriter {
 		return null;
 
 	}
+
 }

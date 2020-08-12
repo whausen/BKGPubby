@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -20,7 +19,6 @@ import org.apache.jena.vocabulary.DC;
 import org.apache.jena.vocabulary.DCTerms;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
-import org.apache.jena.vocabulary.SKOS;
 import org.apache.jena.vocabulary.XSD;
 
 import de.fuberlin.wiwiss.pubby.sources.DataSource;
@@ -52,19 +50,17 @@ public class Configuration extends ResourceReader {
 	private final VocabularyStore vocabularyStore = new VocabularyStore();
 	private final DataSource dataSource;
 	private final String indexIRI;
-	private final Set<String> mapURIs;
 	private final Set<String> allBrowsableNamespaces = new HashSet<String>();
 	
 	public Configuration(Resource configuration) {
 		super(configuration);
 		webBase = getRequiredIRI(CONF.webBase);
-		mapURIs=new TreeSet<String>();
+
 		// Create datasets from conf:dataset
 		for (Resource r: getResources(CONF.dataset)) {
 			Dataset ds = new Dataset(r, this);
 			datasets.add(ds);
 			allBrowsableNamespaces.addAll(ds.getBrowsableNamespaces());
-			mapURIs.add(ds.datasetBase);
 		}
 		allBrowsableNamespaces.add(getWebApplicationBaseURI() + getWebResourcePrefix());
 		allBrowsableNamespaces.addAll(getBrowsableNamespaces());
@@ -84,7 +80,6 @@ public class Configuration extends ResourceReader {
 			labelProperties.add(DC.title);
 			labelProperties.add(DCTerms.title);
 			labelProperties.add(FOAF.name);
-			labelProperties.add(SKOS.prefLabel);
 		}
 		commentProperties = getProperties(CONF.commentProperty);
 		if (commentProperties.isEmpty()) {
@@ -117,6 +112,7 @@ public class Configuration extends ResourceReader {
 		ModelUtil.addNSIfUndefined(prefixes, "rdfs", RDFS.getURI());
 		ModelUtil.addNSIfUndefined(prefixes, "owl", "http://www.w3.org/2002/07/owl#");
 		ModelUtil.addNSIfUndefined(prefixes, "pubby", webBase);
+		System.out.println("Building datasource");
 		dataSource = buildDataSource();
 
 		// Vocabulary data source contains our normal data sources plus
@@ -126,7 +122,6 @@ public class Configuration extends ResourceReader {
 				new ModelDataSource(getModel()), getDataSource());
 		vocabularyStore.setDataSource(vocabularyDataSource);
 		vocabularyStore.setDefaultLanguage(getDefaultLanguage());
-
 		// Sanity check to spot typical configuration problem
 		if (dataSource.getIndex().isEmpty()) {
 			throw new ConfigurationException("The index is empty. " + 
@@ -134,6 +129,7 @@ public class Configuration extends ResourceReader {
 					"check any conf:datasetURIPatterns, " + 
 					"and check that all data sources actually contain data.");
 		}
+		System.out.println("Datasource index: "+dataSource.getLabelIndex());
 		String resourceBase = getWebApplicationBaseURI() + getWebResourcePrefix();
 		if (hasProperty(CONF.indexResource)) {
 			indexIRI = getIRI(CONF.indexResource);
@@ -182,10 +178,6 @@ public class Configuration extends ResourceReader {
 	 */
 	public List<Dataset> getDatasets() {
 		return datasets;
-	}
-	
-	public Set<String> getMapURIs() {
-		return mapURIs;
 	}
 	
 	/**

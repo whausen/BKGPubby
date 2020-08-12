@@ -11,19 +11,21 @@ import org.apache.jena.rdf.model.StmtIterator;
 import org.apache.jena.util.iterator.ExtendedIterator;
 import org.json.JSONException;
 import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.io.ParseException;
 
 import de.fuberlin.wiwiss.pubby.vocab.GEO;
 
 /**
- * Writes a GeoPubby instance as GeoURI.
+ * Extracts an OSM link from the given GeoPubby instance.
  */
-public class GeoURIWriter extends ModelWriter {
+public class OSMLinkWriter extends ModelWriter {
 
 	@Override
 	public ExtendedIterator<Resource> write(Model model, HttpServletResponse response) throws IOException {
 		ExtendedIterator<Resource> it=super.write(model, response);
 		Double lat = null, lon = null;
+        Geometry geom=null;
 		while (it.hasNext()) {
 			Resource ind = it.next();
 			StmtIterator it2 = ind.listProperties();
@@ -33,9 +35,7 @@ public class GeoURIWriter extends ModelWriter {
 						|| GEO.P_GEOMETRY.getURI().equals(curst.getPredicate().getURI())
 						|| GEO.P625.getURI().equals(curst.getPredicate().getURI())) {
 					try {
-						Geometry geom = reader.read(curst.getObject().asLiteral().getString());
-						lat = geom.getCentroid().getCoordinate().getY();
-						lon = geom.getCentroid().getCoordinate().getX();
+						geom = reader.read(curst.getObject().asLiteral().getString());
 					} catch (ParseException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -51,11 +51,15 @@ public class GeoURIWriter extends ModelWriter {
 			}
 		}
 		try {
-			if (lat == null || lon == null) {
-				response.getWriter().write("");
+			if(geom!=null) {
+				Point p=geom.getCentroid();
+				response.getWriter().write("http://www.openstreetmap.org/index.html?lat="+p.getX()+"&lon="+p.getY());
 				response.getWriter().close();
-			} else {
-				response.getWriter().write("geo:" + lat + "," + lon);
+			}else if (lat != null || lon != null) {
+				response.getWriter().write("http://www.openstreetmap.org/index.html?lat="+lat+"&lon="+lon);
+				response.getWriter().close();
+			}else{
+				response.getWriter().write("");
 				response.getWriter().close();
 			}
 		} catch (JSONException e) {
@@ -67,5 +71,5 @@ public class GeoURIWriter extends ModelWriter {
 		}
 		return null;
 	}
-
+	
 }

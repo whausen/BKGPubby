@@ -23,9 +23,9 @@ import com.sun.xml.txw2.output.IndentingXMLStreamWriter;
 import de.fuberlin.wiwiss.pubby.vocab.GEO;
 
 /**
- * Writes a GeoPubby instance as GML.
+ * Writes a GeoPubby instance as OSM/XML.
  */
-public class GMLWriter extends ModelWriter {
+public class OSMWriter extends ModelWriter {
 
 	@Override
 	public ExtendedIterator<Resource> write(Model model, HttpServletResponse response) throws IOException {
@@ -39,14 +39,15 @@ public class GMLWriter extends ModelWriter {
 			try {
 				XMLStreamWriter writer = new IndentingXMLStreamWriter(factory.createXMLStreamWriter(strwriter));
 				writer.writeStartDocument();
-				writer.setPrefix("gml", "http://www.opengis.net/gml");
-				writer.writeStartElement("http://www.opengis.net/gml", "Feature");
-				writer.writeNamespace("gml", "http://www.opengis.net/gml");
+				writer.writeStartElement("osm");
+				writer.writeAttribute("version", "0.6");
+				writer.writeAttribute("generator", "GeoPubby");
 				Map<String, String> ns = new TreeMap<String, String>();
 				while (it.hasNext()) {
 					Resource ind = it.next();
 					StmtIterator it2 = ind.listProperties();
 					int nscounter = 1;
+					writer.setPrefix("gml", "http://www.opengis.net/gml");
 					while (it2.hasNext()) {
 						Statement curst = it2.next();
 						String nss = curst.getPredicate().getURI().toString().substring(0,
@@ -60,7 +61,8 @@ public class GMLWriter extends ModelWriter {
 				}
 				it.close();
 				it = model.listResourcesWithProperty(usedProperty);
-
+				Map<String, String> tags = new TreeMap<>();
+				Integer countgeoms = 0;
 				while (it.hasNext()) {
 					Resource ind = it.next();
 					StmtIterator it2 = ind.listProperties();
@@ -72,11 +74,34 @@ public class GMLWriter extends ModelWriter {
 								|| GEO.P625.getURI().equals(curst.getPredicate().getURI())) {
 							try {
 								Geometry geom = reader.read(curst.getObject().asLiteral().getString());
-								writer.writeStartElement("http://www.opengis.net/gml", geom.getGeometryType());
-								writer.writeStartElement("http://www.opengis.net/gml", "posList");
-								writer.writeCharacters(lat + " " + lon);
-								writer.writeEndElement();
-								writer.writeEndElement();
+								int nodecounter = 1;
+								if (countgeoms == 0) {
+
+									if (geom.getGeometryType().equalsIgnoreCase("Point")) {
+										writer.writeStartElement("node");
+										writer.writeAttribute("lat", geom.getCentroid().getY() + "");
+										writer.writeAttribute("lon", geom.getCentroid().getX() + "");
+										writer.writeAttribute("id", "-" + (nodecounter++));
+									} else if (geom.getGeometryType().toLowerCase().contains("multi")) {
+										for (int g = 0; g < geom.getNumGeometries(); g++) {
+
+										}
+										writer.writeStartElement("node");
+										writer.writeAttribute("lat", geom.getCentroid().getY() + "");
+										writer.writeAttribute("lon", geom.getCentroid().getX() + "");
+										writer.writeAttribute("id", "-" + (nodecounter++));
+										writer.writeEndElement();
+										writer.writeStartElement("relation");
+
+									} else {
+										writer.writeStartElement("way");
+										writer.writeStartElement("node");
+										writer.writeAttribute("lat", geom.getCentroid().getY() + "");
+										writer.writeAttribute("lon", geom.getCentroid().getX() + "");
+										writer.writeAttribute("id", "-" + nodecounter++);
+										writer.writeEndElement();
+									}
+								}
 							} catch (ParseException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
@@ -94,36 +119,51 @@ public class GMLWriter extends ModelWriter {
 							String last = curst.getPredicate().toString()
 									.substring(curst.getPredicate().toString().lastIndexOf('/') + 1);
 							if (ns.containsKey(namespace)) {
-								writer.writeStartElement(namespace, last);
+								// writer.writeStartElement("tag");
+								// writer.writeAttribute("k", last);
 								if (curst.getObject().toString().contains("^^")) {
-									writer.writeCharacters(curst.getObject().toString().substring(0,
+									tags.put(last, curst.getObject().toString().substring(0,
 											curst.getObject().toString().lastIndexOf("^^")));
+									// writer.writeAttribute("v",
+									// curst.getObject().toString().substring(0,curst.getObject().toString().lastIndexOf("^^")));
 								} else {
-									writer.writeCharacters(curst.getObject().toString());
+									tags.put(last, curst.getObject().toString());
+									// writer.writeAttribute("v", curst.getObject().toString());
 								}
-								writer.writeEndElement();
+								// writer.writeEndElement();
 							} else {
-								writer.writeStartElement(curst.getPredicate().toString());
+								// writer.writeStartElement("tag");
+								// writer.writeAttribute("k",curst.getPredicate().toString());
 								if (curst.getObject().toString().contains("^^")) {
-									writer.writeCharacters(curst.getObject().toString().substring(0,
+									tags.put(curst.getPredicate().toString(), curst.getObject().toString().substring(0,
 											curst.getObject().toString().lastIndexOf("^^")));
+									// writer.writeAttribute("v",
+									// curst.getObject().toString().substring(0,curst.getObject().toString().lastIndexOf("^^")));
 								} else {
-									writer.writeCharacters(curst.getObject().toString());
+									tags.put(curst.getPredicate().toString(), curst.getObject().toString());
+									// writer.writeAttribute("v", curst.getObject().toString());
 								}
-								writer.writeEndElement();
+								// writer.writeEndElement();
 							}
 						}
 						if (lon != null && lat != null) {
-							writer.writeStartElement("http://www.opengis.net/gml", "Point");
-							writer.writeStartElement("http://www.opengis.net/gml", "posList");
-							writer.writeCharacters(lat + " " + lon);
-							writer.writeEndElement();
-							writer.writeEndElement();
+							writer.writeStartElement("node");
+							writer.writeAttribute("lat", lat.toString());
+							writer.writeAttribute("lon", lon.toString());
+							writer.writeAttribute("id", "-1");
 							lat = null;
 							lon = null;
+							countgeoms++;
 						}
 					}
 				}
+				for (String key : tags.keySet()) {
+					writer.writeStartElement("tag");
+					writer.writeAttribute("k", key.toString());
+					writer.writeAttribute("v", tags.get(key));
+					writer.writeEndElement();
+				}
+				writer.writeEndElement();
 				writer.writeEndElement();
 				writer.writeEndDocument();
 				writer.flush();
@@ -134,7 +174,8 @@ public class GMLWriter extends ModelWriter {
 			response.getWriter().write(strwriter.toString());
 			response.getWriter().close();
 		}
-		return null;
 
+		return null;
 	}
+
 }

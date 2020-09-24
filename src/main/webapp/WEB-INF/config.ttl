@@ -73,7 +73,7 @@
 # URIs on the Web:             http://localhost:8080/resource/*
     conf:dataset [
         # SPARQL endpoint URL of the dataset
-        conf:sparqlEndpoint <https://ld.gdi-de.org/graphdb/repositories/poi>;
+        conf:sparqlEndpoint <https://graphdb.ld.lpz.gdi-de.org/repositories/poi>;
         # Default graph name to query (not necessary for most endpoints)
         # conf:sparqlDefaultGraph <http://dbpedia.org>;
         # Common URI prefix of all resource URIs in the SPARQL dataset
@@ -117,7 +117,7 @@
     ];
         conf:dataset [
         # SPARQL endpoint URL of the dataset
-        conf:sparqlEndpoint <https://ld.gdi-de.org/graphdb/repositories/gn_inspire>;
+        conf:sparqlEndpoint <https://graphdb.ld.lpz.gdi-de.org/repositories/gn_inspire>;
         # Default graph name to query (not necessary for most endpoints)
         # conf:sparqlDefaultGraph <http://dbpedia.org>;
         # Common URI prefix of all resource URIs in the SPARQL dataset
